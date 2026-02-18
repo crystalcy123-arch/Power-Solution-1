@@ -1,29 +1,45 @@
 import React, { useState, useMemo } from 'react';
-import { SolarNeeds, CommercialNeeds, UserLocation } from '../types';
+import { SolarNeeds, CommercialNeeds, UserLocation, AIResponse } from '../types';
+import { getSolarConsultation } from '../services/geminiService';
 
 interface SolarSectionProps {
   location: UserLocation;
 }
 
-const SuccessModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+// 升级后的弹窗：现在可以展示给用户的 AI 简报
+const SuccessModal: React.FC<{ isOpen: boolean; onClose: () => void; aiAdvice: AIResponse | null }> = ({ isOpen, onClose, aiAdvice }) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-      <div className="bg-white rounded-[2.5rem] p-10 max-w-md w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in duration-300">
-        <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg className="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="bg-white rounded-[2.5rem] p-8 md:p-10 max-w-2xl w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
+        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h3 className="text-2xl font-black text-center text-slate-900 mb-4 font-heading">Inquiry Received!</h3>
-        <p className="text-slate-600 text-center leading-relaxed mb-8">
-          Thank you for reaching out to Power Solution. Our clean-energy experts will analyze your details and contact you shortly.
-        </p>
+        <h3 className="text-2xl font-black text-center text-slate-900 mb-2 font-heading">Inquiry Received!</h3>
+        <p className="text-slate-500 text-center text-sm mb-6 whitespace-pre-wrap">Our clean-energy experts will contact you shortly. Here is your preliminary AI analysis:</p>
+        
+        {/* 展示给用户的简易建议 */}
+        {aiAdvice && (
+          <div className="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-100">
+            <h4 className="text-emerald-700 font-bold text-sm uppercase tracking-widest mb-4">AI Energy Recommendations</h4>
+            <ul className="space-y-3">
+              {aiAdvice.recommendations.map((rec, idx) => (
+                <li key={idx} className="flex items-start text-slate-700 text-sm leading-relaxed">
+                  <span className="text-emerald-500 mr-2 font-bold">•</span>
+                  {rec}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <button 
           onClick={onClose}
           className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200"
         >
-          Excellent
+          Got it, thanks!
         </button>
       </div>
     </div>
@@ -36,6 +52,7 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
   const [contact, setContact] = useState({ name: '', email: '', phone: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [aiAdvice, setAiAdvice] = useState<AIResponse | null>(null);
   
   const [resNeeds, setResNeeds] = useState<SolarNeeds>({
     monthlyBill: 0,
@@ -61,20 +78,32 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
     }
 
     setIsSubmitting(true);
-    const formData = {
-      projectType: mode === 'residential' ? 'Residential Solar' : 'Commercial Solar',
-      customerName: contact.name,
-      customerEmail: contact.email,
-      customerPhone: contact.phone,
-      ...(mode === 'residential' 
-        ? { monthlyBill: resNeeds.monthlyBill, postalCode: resPostalCode, priority: resNeeds.energyPriority }
-        : { facility: comNeeds.facilityType, sqft: comNeeds.squareFootage, monthlyBill: comNeeds.monthlyBill, postalCode: comNeeds.postalCode, notes: comNeeds.notes }
-      ),
-      city: location.city,
-      province: activeRegion
-    };
 
     try {
+      // 1. 获取 AI 咨询逻辑报告
+      const needs = mode === 'residential' ? resNeeds : comNeeds;
+      const advice = await getSolarConsultation(needs, location, mode === 'commercial');
+      setAiAdvice(advice);
+
+      // 2. 准备给您的完整报告（发送至 Formspree）
+      const formData = {
+        projectType: mode === 'residential' ? 'Residential Solar' : 'Commercial Solar',
+        customerName: contact.name,
+        customerEmail: contact.email,
+        customerPhone: contact.phone,
+        ...(mode === 'residential' 
+          ? { monthlyBill: resNeeds.monthlyBill, postalCode: resPostalCode, priority: resNeeds.energyPriority }
+          : { facility: comNeeds.facilityType, sqft: comNeeds.squareFootage, monthlyBill: comNeeds.monthlyBill, postalCode: comNeeds.postalCode, notes: comNeeds.notes }
+        ),
+        city: location.city,
+        province: activeRegion,
+        // 以下是 AI 生成的详细完整报告内容
+        aiFullReport: advice.summary,
+        aiRecommendations: advice.recommendations.join(" | "),
+        aiEstimatedROI: advice.roiEstimate,
+        aiCostRange: advice.estimatedCostRange
+      };
+
       const response = await fetch("https://formspree.io/f/xpqjrjyz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,7 +117,7 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
         throw new Error("Submission failed");
       }
     } catch (err) {
-      alert("Something went wrong. Please try again or contact crystalsli@outlook.com directly.");
+      alert("Something went wrong. Please check your internet or contact crystalsli@outlook.com directly.");
     } finally {
       setIsSubmitting(false);
     }
@@ -96,21 +125,18 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
 
   return (
     <section className="max-w-7xl mx-auto px-4">
-      <SuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} />
+      {/* 传递 aiAdvice 状态给弹窗 */}
+      <SuccessModal 
+        isOpen={showSuccess} 
+        onClose={() => setShowSuccess(false)} 
+        aiAdvice={aiAdvice} 
+      />
       
       <div className="grid lg:grid-cols-2 gap-16">
         <div className="space-y-10">
           <div className="flex flex-col space-y-6">
             <h2 className="text-4xl font-heading font-extrabold text-slate-900">Power Your Future with <span className="text-emerald-600">Solar Energy.</span></h2>
             <p className="text-slate-600 text-lg leading-relaxed max-w-xl">From residential rooftop arrays to industrial-scale energy ecosystems, we deliver high-yield solar solutions across Canada.</p>
-            
-            {mode === 'residential' && (
-              <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-xl">
-                <p className="text-emerald-800 text-sm font-medium italic leading-relaxed">
-                  🏠 You may be eligible for the <span className="font-bold">Canada Greener Homes Loan</span> (up to $40,000 interest-free). Visit the <a href="https://natural-resources.canada.ca/energy-efficiency/homes/canada-greener-homes-initiative/24831" target="_blank" rel="noopener noreferrer" className="underline font-bold hover:text-emerald-600">Official Portal</a>.
-                </p>
-              </div>
-            )}
             
             <div className="bg-slate-200/50 p-1.5 rounded-2xl w-full sm:w-fit flex border border-slate-200">
               <button onClick={() => setMode('residential')} className={`px-8 py-3 rounded-xl font-bold transition-all text-sm ${mode === 'residential' ? 'bg-white text-emerald-600 shadow-md border border-slate-100' : 'text-slate-500'}`}>Residential</button>
@@ -139,7 +165,6 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {/* Facility Type Selector - Added Multi-unit and Others */}
                     <div className="grid grid-cols-3 sm:grid-cols-3 gap-3">
                       {['industrial', 'office', 'retail', 'multi-unit', 'farm', 'others'].map(t => (
                         <button 
@@ -188,14 +213,7 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
                   onClick={handleSubmit}
                   className={`w-full py-6 rounded-2xl font-black text-xl transition-all shadow-xl flex items-center justify-center space-x-3 active:scale-95 ${isSubmitting ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-200'}`}
                 >
-                  {isSubmitting ? (
-                    <>
-                      <svg className="animate-spin h-6 w-6 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                      <span>Submitting...</span>
-                    </>
-                  ) : (
-                    <span>Submit Request & Contact Expert</span>
-                  )}
+                  {isSubmitting ? <span>Submitting...</span> : <span>Submit & Get AI Analysis</span>}
                 </button>
              </div>
           </div>
