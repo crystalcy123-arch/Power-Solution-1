@@ -1,4 +1,3 @@
-
 export interface UserLocation {
   city: string;
   region: string;
@@ -24,7 +23,8 @@ export interface SolarNeeds {
 }
 
 export interface CommercialNeeds {
-  facilityType: 'industrial' | 'office' | 'retail' | 'multi-unit' | 'farm';
+  // 已更新：添加了 'multi-unit' 和 'others'
+  facilityType: 'industrial' | 'office' | 'retail' | 'multi-unit' | 'farm' | 'others';
   squareFootage: number;
   primaryGoal: 'cost-reduction' | 'esg-compliance' | 'energy-resilience';
   monthlyBill?: number;
