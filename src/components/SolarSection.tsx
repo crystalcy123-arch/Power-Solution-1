@@ -6,7 +6,6 @@ interface SolarSectionProps {
   location: UserLocation;
 }
 
-// 升级后的弹窗：现在可以展示给用户的 AI 简报
 const SuccessModal: React.FC<{ isOpen: boolean; onClose: () => void; aiAdvice: AIResponse | null }> = ({ isOpen, onClose, aiAdvice }) => {
   if (!isOpen) return null;
   return (
@@ -18,10 +17,10 @@ const SuccessModal: React.FC<{ isOpen: boolean; onClose: () => void; aiAdvice: A
           </svg>
         </div>
         <h3 className="text-2xl font-black text-center text-slate-900 mb-2 font-heading">Inquiry Received!</h3>
-        <p className="text-slate-500 text-center text-sm mb-6 whitespace-pre-wrap">Our clean-energy experts will contact you shortly. Here is your preliminary AI analysis:</p>
+        <p className="text-slate-500 text-center text-sm mb-6 whitespace-pre-wrap">Our clean-energy experts will contact you shortly.</p>
         
-        {/* 展示给用户的简易建议 */}
-        {aiAdvice && (
+        {/* 仅在 AI 成功返回数据时显示建议 */}
+        {aiAdvice?.recommendations && (
           <div className="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-100">
             <h4 className="text-emerald-700 font-bold text-sm uppercase tracking-widest mb-4">AI Energy Recommendations</h4>
             <ul className="space-y-3">
@@ -79,31 +78,34 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
 
     setIsSubmitting(true);
 
+    let advice: AIResponse | null = null;
     try {
-      // 1. 获取 AI 咨询逻辑报告
+      // 尝试获取 AI 咨询，如果失败（如缺少 Key）则静默跳过
       const needs = mode === 'residential' ? resNeeds : comNeeds;
-      const advice = await getSolarConsultation(needs, location, mode === 'commercial');
+      advice = await getSolarConsultation(needs, location, mode === 'commercial');
       setAiAdvice(advice);
+    } catch (err) {
+      console.warn("AI Consultation skipped due to missing API Key or network error.");
+    }
 
-      // 2. 准备给您的完整报告（发送至 Formspree）
-      const formData = {
-        projectType: mode === 'residential' ? 'Residential Solar' : 'Commercial Solar',
-        customerName: contact.name,
-        customerEmail: contact.email,
-        customerPhone: contact.phone,
-        ...(mode === 'residential' 
-          ? { monthlyBill: resNeeds.monthlyBill, postalCode: resPostalCode, priority: resNeeds.energyPriority }
-          : { facility: comNeeds.facilityType, sqft: comNeeds.squareFootage, monthlyBill: comNeeds.monthlyBill, postalCode: comNeeds.postalCode, notes: comNeeds.notes }
-        ),
-        city: location.city,
-        province: activeRegion,
-        // 以下是 AI 生成的详细完整报告内容
-        aiFullReport: advice.summary,
-        aiRecommendations: advice.recommendations.join(" | "),
-        aiEstimatedROI: advice.roiEstimate,
-        aiCostRange: advice.estimatedCostRange
-      };
+    const formData = {
+      projectType: mode === 'residential' ? 'Residential Solar' : 'Commercial Solar',
+      customerName: contact.name,
+      customerEmail: contact.email,
+      customerPhone: contact.phone,
+      ...(mode === 'residential' 
+        ? { monthlyBill: resNeeds.monthlyBill, postalCode: resPostalCode, priority: resNeeds.energyPriority }
+        : { facility: comNeeds.facilityType, sqft: comNeeds.squareFootage, monthlyBill: comNeeds.monthlyBill, postalCode: comNeeds.postalCode, notes: comNeeds.notes }
+      ),
+      city: location.city,
+      province: activeRegion,
+      // 如果 AI 运行失败，这些字段将为空，但不影响表单提交
+      aiFullReport: advice?.summary || 'N/A (No API Key)',
+      aiRecommendations: advice?.recommendations?.join(" | ") || 'N/A',
+      aiEstimatedROI: advice?.roiEstimate || 'N/A'
+    };
 
+    try {
       const response = await fetch("https://formspree.io/f/xpqjrjyz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -117,7 +119,7 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
         throw new Error("Submission failed");
       }
     } catch (err) {
-      alert("Something went wrong. Please check your internet or contact crystalsli@outlook.com directly.");
+      alert("Submission failed. Please contact crystalsli@outlook.com directly.");
     } finally {
       setIsSubmitting(false);
     }
@@ -125,7 +127,6 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
 
   return (
     <section className="max-w-7xl mx-auto px-4">
-      {/* 传递 aiAdvice 状态给弹窗 */}
       <SuccessModal 
         isOpen={showSuccess} 
         onClose={() => setShowSuccess(false)} 
@@ -165,7 +166,7 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-3 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-3 gap-3">
                       {['industrial', 'office', 'retail', 'multi-unit', 'farm', 'others'].map(t => (
                         <button 
                           key={t} 
@@ -213,7 +214,7 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
                   onClick={handleSubmit}
                   className={`w-full py-6 rounded-2xl font-black text-xl transition-all shadow-xl flex items-center justify-center space-x-3 active:scale-95 ${isSubmitting ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-200'}`}
                 >
-                  {isSubmitting ? <span>Submitting...</span> : <span>Submit & Get AI Analysis</span>}
+                  {isSubmitting ? <span>Submitting...</span> : <span>Submit Inquiry</span>}
                 </button>
              </div>
           </div>
