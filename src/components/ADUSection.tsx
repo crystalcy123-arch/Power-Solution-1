@@ -269,86 +269,45 @@ const ADUSection: React.FC<ADUSectionProps> = ({ location }) => {
                   Monthly Rental<br />Income
                 </div>
               </div>
-              
-              <div className="text-center md:text-right w-full md:w-auto">
-                <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter leading-none mb-1">
-                  {rentalIncome}
-                </p>
-                <div className="flex items-center justify-center md:justify-end space-x-2">
-                   <span className="h-[2px] w-8 bg-[#0ea5e9] hidden md:block"></span>
-                   <span className="text-lg md:text-xl text-[#0ea5e9] font-black uppercase tracking-[0.2em]">CAD</span>
-                </div>
-              </div>
-            </div>
+             
+              <div className="bg-[#0f172a] p-6 md:p-8 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between shadow-2xl border border-white/5 overflow-hidden">
+  <div className="flex items-center space-x-4 md:space-x-5 w-full md:w-auto mb-6 md:mb-0">
+    {/* 装饰图标：略微缩小以平衡比例 */}
+    <div className="flex-shrink-0 w-[60px] h-[80px] md:w-[76px] md:h-[100px] bg-[#0ea5e9] rounded-[1.2rem] md:rounded-[1.8rem] flex items-center justify-center text-white shadow-[0_0_30px_rgba(14,165,233,0.3)]">
+       <div className="w-9 h-9 md:w-11 md:h-11 rounded-full border-[2px] border-white/90 flex items-center justify-center">
+         <span className="text-lg md:text-xl font-black">$</span>
+       </div>
+    </div>
+    <div className="text-xl md:text-2xl font-bold text-white leading-tight tracking-tight">
+      Monthly Rental<br />Income
+    </div>
+  </div>
+  
+  {/* 数字区域：将桌面端最大字体降至 5xl，并强制不换行 */}
+  <div className="text-center md:text-right w-full md:w-auto">
+    <p className="text-4xl sm:text-5xl md:text-5xl lg:text-5xl font-black text-white tracking-tighter leading-none mb-2 whitespace-nowrap">
+      {rentalIncome}
+    </p>
+    <div className="flex items-center justify-center md:justify-end space-x-2">
+       <span className="h-[2px] w-6 bg-[#0ea5e9] hidden md:block opacity-50"></span>
+       <span className="text-base md:text-lg text-[#0ea5e9] font-black uppercase tracking-[0.2em]">CAD</span>
+    </div>
+  </div>
+</div>
 
-            <div className="space-y-4">
-              <label className="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 italic">Optional Smart-Tech Add-ons</label>
-              <div className="space-y-3">
-                {addonOptions.map((opt) => (
-                  <button key={opt.key} onClick={() => toggleAddon(opt.key)} className={`w-full p-6 rounded-2xl border-2 transition-all flex items-center space-x-4 text-left group ${config.addons[opt.key] ? 'bg-sky-50 border-sky-500' : 'bg-slate-50 border-slate-100 hover:border-slate-200'}`}>
-                    <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${config.addons[opt.key] ? 'bg-sky-500 text-white' : 'bg-white text-slate-400'}`}>{opt.icon}</div>
-                    <div className="flex-grow">
-                      <div className="text-sm font-black text-slate-900 leading-none mb-1">{opt.label}</div>
-                      <div className="text-xs text-slate-500">{opt.description}</div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-slate-100 space-y-4">
-              <label className="block text-sm font-bold text-slate-400 uppercase tracking-widest">Your Contact Information</label>
-              <div className="grid md:grid-cols-2 gap-4">
-                <input type="text" placeholder="Full Name" value={contact.name} onChange={e => setContact({...contact, name: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-sky-500 outline-none font-medium" />
-                <input type="email" placeholder="Email Address" value={contact.email} onChange={e => setContact({...contact, email: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-sky-500 outline-none font-medium" />
-              </div>
-              <input type="tel" placeholder="Phone Number" value={contact.phone} onChange={e => setContact({...contact, phone: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-sky-500 outline-none font-medium" />
-            </div>
-
-            <button 
-              disabled={isSubmitting}
-              onClick={handleBookSession}
-              className={`w-full py-6 rounded-[1.5rem] font-black text-xl transition-all shadow-xl active:scale-95 flex items-center justify-center space-x-3 ${isSubmitting ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-sky-500 text-white hover:bg-sky-600 shadow-sky-200'}`}
-            >
-              {isSubmitting ? (
-                <>
-                  <svg className="animate-spin h-6 w-6 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                  <span>Submitting...</span>
-                </>
-              ) : (
-                <span>Book Design Session</span>
-              )}
-            </button>
-          </div>
-        </div>
-
-        <div className="relative">
-          <div className="bg-[#0f172a] text-white p-10 rounded-[3.5rem] shadow-2xl h-full flex flex-col sticky top-24 border border-slate-800">
-             <div className="flex-grow space-y-6">
-                <div className="rounded-[2.5rem] overflow-hidden border border-slate-200/20 bg-white p-2 shadow-2xl relative cursor-zoom-in" onClick={() => setIsEnlarged(true)}>
-                  <img src={currentImage} alt="Framework View" className="w-full h-auto max-h-[450px] object-contain rounded-[2rem] bg-white" />
-                </div>
-                
-                {/* 侧边栏价格显示优化 */}
-                <div className="mt-8 pt-8 border-t border-white/10">
-                  <p className="text-slate-400 text-xs font-black uppercase tracking-[0.15em] mb-3">Estimated Total Investment</p>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-4xl md:text-5xl font-black text-white tracking-tighter">
-                      {basePrice}
-                    </span>
-                    <span className="text-lg md:text-xl text-sky-500 font-bold">CAD</span>
-                  </div>
-                  <p className="text-slate-500 text-[11px] md:text-xs mt-4 font-medium italic leading-relaxed">
-                    Includes full SIP structural shell and standard installation. Government grants not included in estimate.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  {highlights.map((h, i) => (
-                    <div key={i} className="bg-slate-800/20 rounded-2xl border border-slate-800/50 p-5">
-                      <h4 className="text-sm font-black text-sky-400 mb-2">{h.title}</h4>
-                      <p className="text-xs text-slate-400 leading-relaxed">{h.intro}</p>
-                    </div>
+{/* 侧边栏价格显示同步调整 */}
+<div className="mt-8 pt-6 border-t border-white/10">
+  <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-2 opacity-70">Estimated Total Investment</p>
+  <div className="flex items-baseline space-x-2 whitespace-nowrap">
+    <span className="text-3xl md:text-4xl font-black text-white tracking-tighter">
+      {basePrice}
+    </span>
+    <span className="text-base text-sky-500 font-bold">CAD</span>
+  </div>
+  <p className="text-slate-500 text-[11px] mt-4 font-medium italic leading-relaxed opacity-80">
+    Includes full SIP structural shell and standard installation.
+  </p>
+</div>
                   ))}
                 </div>
              </div>
