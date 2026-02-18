@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { SolarNeeds, CommercialNeeds, UserLocation } from '../types';
 
@@ -140,9 +139,20 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-3 gap-3">
-                      {['industrial', 'office', 'retail', 'farm'].map(t => (
-                        <button key={t} onClick={() => setComNeeds({...comNeeds, facilityType: t as any})} className={`p-4 rounded-xl border-2 font-bold capitalize transition-all ${comNeeds.facilityType === t ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-200' : 'bg-slate-50 border-slate-50 text-slate-600 hover:border-slate-200'}`}>{t}</button>
+                    {/* Facility Type Selector - Added Multi-unit and Others */}
+                    <div className="grid grid-cols-3 sm:grid-cols-3 gap-3">
+                      {['industrial', 'office', 'retail', 'multi-unit', 'farm', 'others'].map(t => (
+                        <button 
+                          key={t} 
+                          onClick={() => setComNeeds({...comNeeds, facilityType: t as any})} 
+                          className={`p-4 rounded-xl border-2 font-bold capitalize transition-all text-sm md:text-base ${
+                            comNeeds.facilityType === t 
+                            ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-200' 
+                            : 'bg-slate-50 border-slate-50 text-slate-600 hover:border-slate-200'
+                          }`}
+                        >
+                          {t.replace('-', ' ')}
+                        </button>
                       ))}
                     </div>
                     <div className="grid md:grid-cols-2 gap-6">
