@@ -206,7 +206,18 @@ const ADUSection: React.FC<ADUSectionProps> = ({ location }) => {
     }
   ];
 
-  const currentImage = config.size === 'studio' ? 'F1.png' : 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&q=80&w=1200';
+ const currentImage = useMemo(() => {
+  if (config.size === 'studio') {
+    return '/F1.png'; 
+  }
+  if (config.size === '1-bedroom') {
+    return '/F3.png'; 
+  }
+  if (config.size === '2-bedroom') {
+    return '/F4.png';
+  }
+  return '/F1.png'; // 默认图
+}, [config.size]);
 
   return (
     <section className="max-w-7xl mx-auto px-4">
