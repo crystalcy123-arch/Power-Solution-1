@@ -39,4 +39,4 @@ export interface AIResponse {
   roiEstimate?: string;
 }
 
-export type MainCategory = 'home' | 'solar';
+export type MainCategory = 'home' | 'solar' | 'gallery';
