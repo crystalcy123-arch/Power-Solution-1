@@ -1,7 +1,12 @@
-
 import React from 'react';
+import { MainCategory } from '../types';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  activeTab: MainCategory;
+  setActiveTab: (tab: MainCategory) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   const downloadLogo = () => {
     // 构建包含图标和文字的完整品牌 Logo SVG
     const svgData = `
@@ -12,12 +17,8 @@ const Header: React.FC = () => {
             .text-solution { fill: #059669; font-family: 'Inter', sans-serif; font-weight: 800; font-size: 160px; }
           </style>
         </defs>
-        <!-- Logo Icon Container -->
         <rect x="50" y="50" width="300" height="300" rx="70" fill="#059669"/>
-        <!-- Lightning Bolt -->
         <path d="M225 175V75L100 225H187.5V325L312.5 175H225Z" fill="white"/>
-        
-        <!-- Brand Text -->
         <text x="400" y="260" class="text-power">Power</text>
         <text x="910" y="260" class="text-solution">Solution</text>
       </svg>
@@ -35,8 +36,9 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center">
+    <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-[100] border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+        {/* 左侧：Logo 下载区域 */}
         <div 
           className="flex items-center space-x-2 cursor-pointer group" 
           onClick={downloadLogo}
@@ -47,16 +49,19 @@ const Header: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <span className="text-xl font-bold font-heading tracking-tight text-slate-900">
+          <span className="text-xl font-bold font-heading tracking-tight text-slate-900 hidden sm:inline">
             Power <span className="text-emerald-600">Solution</span>
           </span>
-          <div className="ml-3 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-100 text-[10px] text-slate-400 px-2 py-1 rounded font-black uppercase tracking-tighter">
+          <div className="ml-3 hidden lg:block opacity-0 group-hover:opacity-100 transition-opacity bg-slate-100 text-[10px] text-slate-400 px-2 py-1 rounded font-black uppercase tracking-tighter">
             Save Full Logo
           </div>
         </div>
-      </div>
-    </header>
-  );
-};
 
-export default Header;
+        {/* 中间：导航标签页切换 */}
+        <nav className="flex items-center space-x-1 bg-slate-100 p-1 rounded-2xl border border-slate-200">
+          <button 
+            onClick={() => setActiveTab('home')}
+            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'home' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            ADU Design
+          </button
