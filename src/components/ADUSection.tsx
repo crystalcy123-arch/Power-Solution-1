@@ -156,8 +156,13 @@ const ADUSection: React.FC<ADUSectionProps> = ({ location }) => {
       <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
         <div className="space-y-10">
           <div>
-            <h2 className="text-3xl md:text-4xl font-heading font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">Unlock the Full Potential of Your Backyard</h2>
-            <p className="text-slate-600 text-lg leading-relaxed">We configure high-performance ADUs with solar energy and smart-tech options tailored for your property.</p>
+            <h2 className="text-3xl md:text-4xl font-heading font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">
+              Unlock the Full Potential of Your Backyard
+            </h2>
+            {/* 更新后的描述文字：添加了全称和括号 */}
+            <p className="text-slate-600 text-lg leading-relaxed">
+              We configure high-performance <span className="font-bold text-slate-900">Accessory Dwelling Units (ADUs)</span> with solar energy and smart-tech options tailored specifically for your property.
+            </p>
           </div>
 
           <div className="bg-white p-6 md:p-8 rounded-[2.5rem] border border-slate-200 shadow-2xl space-y-10">
@@ -166,14 +171,13 @@ const ADUSection: React.FC<ADUSectionProps> = ({ location }) => {
               <div className="grid grid-cols-3 gap-4">
                 {['studio', '1-bedroom', '2-bedroom'].map((s) => (
                   <button key={s} onClick={() => setConfig({ ...config, size: s as any })} 
-                    className={`py-4 px-2 text-center rounded-2xl border-2 transition-all ${config.size === s ? 'bg-sky-500 border-sky-500 text-white font-bold' : 'border-slate-100 bg-slate-50 text-slate-600'}`}>
+                    className={`py-4 px-2 text-center rounded-2xl border-2 transition-all ${config.size === s ? 'bg-sky-500 border-sky-500 text-white font-bold shadow-lg shadow-sky-100' : 'border-slate-100 bg-slate-50 text-slate-600'}`}>
                     <span className="text-sm md:text-base capitalize font-bold">{s.replace('-', ' ')}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* 恢复原始稳健尺寸的收益卡片 */}
             <div className="bg-[#0f172a] p-8 rounded-[2rem] flex items-center justify-between shadow-xl border border-white/5">
               <div className="flex items-center space-x-6">
                 <div className="w-12 h-12 bg-[#0ea5e9] rounded-2xl flex items-center justify-center text-white shadow-lg">
