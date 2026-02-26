@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ADUSection from './components/ADUSection';
 import SolarSection from './components/SolarSection';
+import GallerySection from './components/GallerySection'; // 导入新组件
 import Footer from './components/Footer';
 import { detectLocation } from './services/locationService';
 import { UserLocation, MainCategory } from './types';
@@ -17,6 +17,7 @@ const App: React.FC = () => {
     isDetected: false
   });
 
+  // 自动检测用户位置以提供个性化定价
   useEffect(() => {
     detectLocation().then((loc) => {
       if (loc.country === 'Canada' || !loc.isDetected) {
@@ -43,21 +44,29 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <Header />
+      {/* 传入 activeTab 和 setActiveTab 以控制导航切换 */}
+      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+      
       <main className="flex-grow">
-        <Hero 
-          location={location}
-          onHomeClick={handleHomeCta}
-          onSolarClick={handleSolarCta}
-        />
+        {/* 仅在首页展示 Hero 区域 */}
+        {activeTab === 'home' && (
+          <Hero 
+            location={location}
+            onHomeClick={handleHomeCta}
+            onSolarClick={handleSolarCta}
+          />
+        )}
         
-        <div id="configurator" className="pt-20 pb-32 bg-slate-50/50">
+        <div id="configurator" className={`pb-32 bg-slate-50/50 ${activeTab === 'home' ? 'pt-20' : 'pt-32'}`}>
           <div className="max-w-7xl mx-auto px-4">
+            {/* 根据 activeTab 渲染对应的业务板块 */}
             {activeTab === 'home' && <ADUSection location={location} />}
             {activeTab === 'solar' && <SolarSection location={location} />}
+            {activeTab === 'gallery' && <GallerySection />} 
           </div>
         </div>
       </main>
+      
       <Footer />
     </div>
   );
