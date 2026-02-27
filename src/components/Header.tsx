@@ -8,7 +8,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   const downloadLogo = () => {
-    // 构建包含图标和文字的完整品牌 Logo SVG
     const svgData = `
       <svg width="1200" height="400" viewBox="0 0 1200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -38,11 +37,10 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-[100] border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-        {/* 左侧：Logo 下载区域 */}
         <div 
           className="flex items-center space-x-2 cursor-pointer group" 
           onClick={downloadLogo}
-          title="点击下载完整品牌 Logo (含文字)"
+          title="点击下载完整品牌 Logo"
         >
           <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,16 +50,35 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
           <span className="text-xl font-bold font-heading tracking-tight text-slate-900 hidden sm:inline">
             Power <span className="text-emerald-600">Solution</span>
           </span>
-          <div className="ml-3 hidden lg:block opacity-0 group-hover:opacity-100 transition-opacity bg-slate-100 text-[10px] text-slate-400 px-2 py-1 rounded font-black uppercase tracking-tighter">
-            Save Full Logo
-          </div>
         </div>
 
-        {/* 中间：导航标签页切换 */}
         <nav className="flex items-center space-x-1 bg-slate-100 p-1 rounded-2xl border border-slate-200">
           <button 
             onClick={() => setActiveTab('home')}
-            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'home' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'home' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}
           >
             ADU Design
-          </button
+          </button>
+          <button 
+            onClick={() => setActiveTab('solar')}
+            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'solar' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}
+          >
+            Solar
+          </button>
+          <button 
+            onClick={() => setActiveTab('gallery')}
+            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'gallery' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}
+          >
+            Gallery
+          </button>
+        </nav>
+
+        <button className="hidden md:block bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-slate-800 transition-all text-sm">
+          Contact
+        </button>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
