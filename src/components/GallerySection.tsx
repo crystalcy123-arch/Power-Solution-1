@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 const GallerySection: React.FC = () => {
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
-  // 根据您的 GitHub 路径（public/images/）更新的图片列表
   const images = [
     { 
       url: '/images/scandi-studio-adu-1772139350805.png', 
