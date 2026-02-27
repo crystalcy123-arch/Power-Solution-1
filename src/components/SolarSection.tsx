@@ -54,45 +54,23 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
 
   const activeRegion = useMemo(() => location.region || 'ON', [location.region]);
 
-  const handleSubmit = async () => {
-    if (!contact.email || !contact.name) {
-      alert("Please provide at least your name and email.");
-      return;
-    }
+  const handleSubmit = async (data: any) => {
+  // 准备提交给新 ID 的数据
+  const payload = {
+    _subject: `Solar Energy Quote Request - ${location.city}`,
+    category: "Solar Inquiry",
+    ...data,
+    detectedCity: location.city,
+    detectedRegion: location.region
+  };
 
-    setIsSubmitting(true);
-    const formData = {
-      projectType: mode === 'residential' ? 'Residential Solar' : 'Commercial Solar',
-      customerName: contact.name,
-      customerEmail: contact.email,
-      customerPhone: contact.phone,
-      ...(mode === 'residential' 
-        ? { monthlyBill: resNeeds.monthlyBill, postalCode: resPostalCode, priority: resNeeds.energyPriority }
-        : { facility: comNeeds.facilityType, sqft: comNeeds.squareFootage, monthlyBill: comNeeds.monthlyBill, postalCode: comNeeds.postalCode, notes: comNeeds.notes }
-      ),
-      city: location.city,
-      province: activeRegion
-    };
-
-    try {
-      const response = await fetch("https://formspree.io/f/xpqjrjyz", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
-        setShowSuccess(true);
-        setContact({ name: '', email: '', phone: '' });
-      } else {
-        throw new Error("Submission failed");
-      }
-    } catch (err) {
-      alert("Something went wrong. Please try again or contact crystalsli@outlook.com directly.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // 使用您的新 Formspree ID
+  return await fetch("https://formspree.io/f/xreadzbr", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+};
 
   return (
     <section className="max-w-7xl mx-auto px-4">
