@@ -87,44 +87,42 @@ const ADUSection: React.FC<ADUSectionProps> = ({ location }) => {
     }));
   };
 
-  const handleBookSession = async () => {
-    if (!contact.email || !contact.name) {
-      alert("Please provide at least your name and email.");
-      return;
+const handleBookSession = async () => {
+  if (!contact.email || !contact.name) {
+    alert("Please provide at least your name and email.");
+    return;
+  }
+
+  setIsSubmitting(true);
+  try {
+    // 使用您的新 Formspree ID
+    const response = await fetch("https://formspree.io/f/xreadzbr", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        _subject: `New ADU Design Inquiry: ${contact.name}`, // 自定义邮件主题
+        project: "ADU Design Session",
+        customerName: contact.name,
+        customerEmail: contact.email,
+        customerPhone: contact.phone,
+        selectedSize: config.size,
+        estimatedBasePrice: basePrice,
+        location: `${location.city}, ${location.region}` // 包含检测到的 St. Catharines 位置
+      })
+    });
+
+    if (response.ok) {
+      setShowSuccess(true);
+      setContact({ name: '', email: '', phone: '' });
+    } else {
+      throw new Error("Submission failed");
     }
-
-    setIsSubmitting(true);
-    const formData = {
-      projectType: 'ADU Design Session',
-      customerName: contact.name,
-      customerEmail: contact.email,
-      customerPhone: contact.phone,
-      aduSize: config.size,
-      basePrice: basePrice,
-      rentalEstimate: rentalIncome,
-      city: location.city,
-      province: activeRegion
-    };
-
-    try {
-      const response = await fetch("https://formspree.io/f/xpqjrjyz", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
-        setShowSuccess(true);
-        setContact({ name: '', email: '', phone: '' });
-      } else {
-        throw new Error("Submission failed");
-      }
-    } catch (err) {
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  } catch (err) {
+    alert("Something went wrong. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const highlights = [
     { title: "1. Built Better, Built Faster", intro: "Advanced SIP Structural Panel System." },
