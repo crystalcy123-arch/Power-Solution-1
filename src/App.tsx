@@ -3,7 +3,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import ADUSection from './components/ADUSection';
 import SolarSection from './components/SolarSection';
-import GallerySection from './components/GallerySection'; // 导入新组件
+import GallerySection from './components/GallerySection.tsx';
 import Footer from './components/Footer';
 import { detectLocation } from './services/locationService';
 import { UserLocation, MainCategory } from './types';
