@@ -5,6 +5,8 @@ export interface UserLocation {
   isDetected: boolean;
 }
 
+export type MainCategory = 'home' | 'solar' | 'adu' | 'gallery';
+
 export interface ADUConfig {
   size: 'studio' | '1-bedroom' | '2-bedroom';
   intendedUse: 'rental' | 'family' | 'office' | 'guest-house';
@@ -23,7 +25,6 @@ export interface SolarNeeds {
 }
 
 export interface CommercialNeeds {
-  // 支持商业太阳能的多样化设施类型
   facilityType: 'industrial' | 'office' | 'retail' | 'multi-unit' | 'farm' | 'others';
   squareFootage: number;
   primaryGoal: 'cost-reduction' | 'esg-compliance' | 'energy-resilience';
@@ -33,15 +34,8 @@ export interface CommercialNeeds {
 }
 
 export interface AIResponse {
-  // 支撑双向 AI 报告逻辑的核心接口
   summary: string;
   recommendations: string[];
   estimatedCostRange: string;
   roiEstimate?: string;
 }
-
-/**
- * 已更新：包含 'adu' 和 'gallery'
- * 顺序对应导航栏：Home -> Solar -> ADU Design -> Gallery
- */
-export type MainCategory = 'home' | 'solar' | 'adu' | 'gallery';
