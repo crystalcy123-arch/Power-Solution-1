@@ -3,17 +3,21 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import SolarSection from './components/SolarSection';
 import ADUSection from './components/ADUSection';
-import ProcessSection from './components/ProcessSection'; // 新增：导入原生流程组件
+import ProcessSection from './components/ProcessSection'; 
 import GallerySection from './components/GallerySection';
 import Footer from './components/Footer';
 import { MainCategory, UserLocation } from './types';
 
 const App: React.FC = () => {
+  // 1. 状态初始化：显式指定类型以匹配 types.ts 定义
   const [activeTab, setActiveTab] = useState<MainCategory>('home');
+  
+  // 2. 修复类型错误：补全 UserLocation 接口所需的 isDetected 属性
   const [location] = useState<UserLocation>({
     city: 'St. Catharines',
     region: 'ON',
-    country: 'Canada'
+    country: 'Canada',
+    isDetected: true // 补全此属性以通过 TS 编译
   });
 
   return (
@@ -40,7 +44,8 @@ const App: React.FC = () => {
         {/* --- 场景 3: ADU DESIGN (包含原首页文字介绍) --- */}
         {activeTab === 'adu' && (
           <div className="animate-in fade-in duration-500">
-            {/* Hero 介绍文字现在仅在此板块显示，且已去掉彩色按钮 */}
+            {/* Hero 介绍文字现在仅在此板块显示 */}
+            {/* 彩色按钮已在此组件内部代码中去掉 */}
             <Hero location={location} onHomeClick={() => {}} onSolarClick={() => {}} />
             <ADUSection location={location} />
           </div>
@@ -54,7 +59,7 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {/* 统一页脚：固定出现在所有标签页底部 */}
+      {/* 统一页脚：包含专业联系信息，主页底部不再显示重复的蓝色块 */}
       <Footer />
     </div>
   );
