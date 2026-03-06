@@ -1,12 +1,13 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { getADUConsultation } from '../services/geminiService';
-import { ADUConfig, AIResponse, UserLocation } from '../types';
-import { regionalKnowledge } from '../data/businessKnowledge';
+import React, { useState } from 'react';
+import { useUserLocation } from '../hooks/useUserLocation';
+import { UserLocation } from '../types';
+import GallerySection from './GallerySection'; // 导入 GallerySection 以作为背景展示
 
 interface ADUSectionProps {
   location: UserLocation;
 }
 
+// 提交成功的模态框组件
 const SuccessModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
   return (
@@ -17,216 +18,159 @@ const SuccessModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h3 className="text-2xl font-black text-center text-slate-900 mb-4 font-heading">Success!</h3>
+        <h3 className="text-2xl font-black text-center text-slate-900 mb-4 font-heading">Design Session Booked!</h3>
         <p className="text-slate-600 text-center leading-relaxed mb-8">
-          Your design session request has been submitted. Our architectural team will contact you shortly to discuss your project.
+          Thank you for choosing Power Solution. A garden suite expert will review your preliminary configuration and contact you shortly to schedule your personalized design session.
         </p>
         <button 
           onClick={onClose}
-          className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all"
+          className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200"
         >
-          Got it, thanks!
+          Excellent
         </button>
       </div>
     </div>
   );
 };
 
-const ADUSection: React.FC<ADUSectionProps> = ({ location }) => {
-  const [config, setConfig] = useState<ADUConfig>({
-    size: 'studio',
-    intendedUse: 'rental',
-    addons: {
-      energyIndependence: false,
-      smartSecurity: false,
-      carbonNeutral: false,
-      zonalComfort: false
-    }
-  });
-  
+const ADUSection: React.FC<ADUSectionProps> = ({ location: initialLocation }) => {
+  // 默认使用传入的位置，如果没有则使用 Hook 检测
+  const hookLocation = useUserLocation();
+  const location = initialLocation.city ? initialLocation : hookLocation;
+
+  const [config, setConfig] = useState({ size: '500', finish: 'modern' });
   const [contact, setContact] = useState({ name: '', email: '', phone: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [isEnlarged, setIsEnlarged] = useState(false);
-
-  const activeRegion = useMemo(() => {
-    return location.region in regionalKnowledge ? location.region : 'ON';
-  }, [location.region]);
-
-  const rentalIncome = useMemo(() => {
-    const pricing = regionalKnowledge[activeRegion].aduPricing;
-    switch (config.size) {
-      case 'studio': return pricing.studio.rentalEstimate;
-      case '1-bedroom': return pricing.oneBed.rentalEstimate;
-      case '2-bedroom': return pricing.twoBed.rentalEstimate;
-      default: return '$0';
-    }
-  }, [config.size, activeRegion]);
 
   const basePrice = useMemo(() => {
-    const pricing = regionalKnowledge[activeRegion].aduPricing;
-    switch (config.size) {
-      case 'studio': return pricing.studio.basePrice;
-      case '1-bedroom': return pricing.oneBed.basePrice;
-      case '2-bedroom': return pricing.twoBed.basePrice;
-      default: return '$0';
+    const prices: Record<string, number> = { '500': 189000, '750': 249000, '1000': 319000 };
+    return prices[config.size] || 189000;
+  }, [config.size]);
+
+  // 处理表单提交逻辑
+  const handleBookSession = async () => {
+    if (!contact.email || !contact.name) {
+      alert("Please provide at least your name and email.");
+      return;
     }
-  }, [config.size, activeRegion]);
 
-  const policyLink = useMemo(() => {
-    return (regionalKnowledge[activeRegion] || regionalKnowledge['Default']).policyUrl;
-  }, [activeRegion]);
-
-  const toggleAddon = (key: keyof ADUConfig['addons']) => {
-    setConfig(prev => ({
-      ...prev,
-      addons: {
-        ...prev.addons,
-        [key]: !prev.addons[key]
-      }
-    }));
-  };
-
-const handleBookSession = async () => {
-  if (!contact.email || !contact.name) {
-    alert("Please provide at least your name and email.");
-    return;
-  }
-
-  setIsSubmitting(true);
-  try {
-    // 使用您的新 Formspree ID
-    const response = await fetch("https://formspree.io/f/xreadzbr", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        _subject: `New ADU Design Inquiry: ${contact.name}`, // 自定义邮件主题
-        project: "ADU Design Session",
+    setIsSubmitting(true);
+    try {
+      // 准备提交数据，加入 _gotcha 提高可信度
+      const payload = {
+        _subject: `New ADU Design Inquiry: ${contact.name} (${config.size} sqft)`,
+        _gotcha: "", // Honeypot 字段，防止被标记为 Spam
+        projectType: "ADU Design Session",
         customerName: contact.name,
         customerEmail: contact.email,
         customerPhone: contact.phone,
-        selectedSize: config.size,
-        estimatedBasePrice: basePrice,
-        location: `${location.city}, ${location.region}` // 包含检测到的 St. Catharines 位置
-      })
-    });
+        selectedSize: `${config.size} sqft`,
+        estimatedBasePrice: `$${basePrice.toLocaleString()}`,
+        finishStyle: config.finish,
+        detectedLocation: `${location.city || 'St. Catharines'}, ${location.region || 'ON'}`, // 默认 St. Catharines
+        timestamp: new Date().toISOString()
+      };
 
-    if (response.ok) {
-      setShowSuccess(true);
-      setContact({ name: '', email: '', phone: '' });
-    } else {
-      throw new Error("Submission failed");
+      // 使用您的新 Formspree ID xreadzbr
+      const response = await fetch("https://formspree.io/f/xreadzbr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        setShowSuccess(true);
+        // 重置联系信息
+        setContact({ name: '', email: '', phone: '' });
+      } else {
+        throw new Error("Submission failed");
+      }
+    } catch (err) {
+      alert("Something went wrong. Please try again or contact admin@powersolution.ca directly.");
+    } finally {
+      setIsSubmitting(false);
     }
-  } catch (err) {
-    alert("Something went wrong. Please try again.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-  const highlights = [
-    { title: "1. Built Better, Built Faster", intro: "Advanced SIP Structural Panel System." },
-    { title: "2. Hybrid Comfort System", intro: "High-efficiency heat pump with luxury heated floors." },
-    { title: "3. Mono-Slope Energy Roof", intro: "Perfect angle for solar capture and high vaulted ceilings." },
-    { title: "4. Net-Zero Standard", intro: "Built for the future of energy independence." }
-  ];
-
-  const currentImage = useMemo(() => {
-    if (config.size === 'studio') return '/F1.png';
-    if (config.size === '1-bedroom') return '/F3.png';
-    if (config.size === '2-bedroom') return '/F4.png';
-    return '/F1.png';
-  }, [config.size]);
+  };
 
   return (
-    <section className="max-w-7xl mx-auto px-4">
+    <section className="relative pt-32 pb-24 overflow-hidden bg-slate-50">
       <SuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} />
       
-      {isEnlarged && (
-        <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-12 cursor-zoom-out" onClick={() => setIsEnlarged(false)}>
-          <button className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors" onClick={() => setIsEnlarged(false)}>
-            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-          <img src={currentImage} alt="Floor Plan" className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl" />
-        </div>
-      )}
+      {/* 引用 GallerySection 作为背景 */}
+      <div className="absolute inset-0 z-0 opacity-[0.03] scale-110 blur-[2px]">
+        <GallerySection />
+      </div>
 
-      <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-        <div className="space-y-10">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-heading font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">
-              Unlock the Full Potential of Your Backyard
-            </h2>
-            {/* 更新后的描述文字：添加了全称和括号 */}
-            <p className="text-slate-600 text-lg leading-relaxed">
-              We configure high-performance <span className="font-bold text-slate-900">Accessory Dwelling Units (ADUs)</span> with solar energy and smart-tech options tailored specifically for your property.
-            </p>
-          </div>
-
-          <div className="bg-white p-6 md:p-8 rounded-[2.5rem] border border-slate-200 shadow-2xl space-y-10">
-            <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Select Design Framework</label>
-              <div className="grid grid-cols-3 gap-4">
-                {['studio', '1-bedroom', '2-bedroom'].map((s) => (
-                  <button key={s} onClick={() => setConfig({ ...config, size: s as any })} 
-                    className={`py-4 px-2 text-center rounded-2xl border-2 transition-all ${config.size === s ? 'bg-sky-500 border-sky-500 text-white font-bold shadow-lg shadow-sky-100' : 'border-slate-100 bg-slate-50 text-slate-600'}`}>
-                    <span className="text-sm md:text-base capitalize font-bold">{s.replace('-', ' ')}</span>
-                  </button>
-                ))}
-              </div>
+      <div className="max-w-7xl mx-auto px-4 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          
+          {/* 左侧文字介绍区域 */}
+          <div className="space-y-12">
+            <div className="space-y-6">
+              <h2 className="text-5xl md:text-6xl font-heading font-extrabold text-slate-900 leading-tight tracking-tighter">
+                Modern Living, Redefined: <span className="text-emerald-600">Custom Garden Suites.</span>
+              </h2>
+              <p className="text-xl text-slate-600 leading-relaxed max-w-xl">
+                Create independent, smart-enabled spaces in {location.city || 'your Ontario community'} for the ones you love. We combine architectural excellence with solar-powered solutions to deliver comfortable, eco-friendly homes.
+              </p>
             </div>
 
-            <div className="bg-[#0f172a] p-8 rounded-[2rem] flex items-center justify-between shadow-xl border border-white/5">
-              <div className="flex items-center space-x-6">
-                <div className="w-12 h-12 bg-[#0ea5e9] rounded-2xl flex items-center justify-center text-white shadow-lg">
-                   <span className="text-xl font-bold">$</span>
-                </div>
-                <div className="text-lg md:text-xl font-bold text-white leading-tight">Monthly Rental<br />Income</div>
+            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl inline-flex items-center space-x-4">
+              <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center">
+                <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l7-7 7 7M19 10v10a1 1 0 01-1 1h-3m-60a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
               </div>
-              <div className="text-right">
-                <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">{rentalIncome}</p>
-                <p className="text-sm text-[#0ea5e9] font-bold uppercase tracking-widest mt-1">CAD</p>
+              <div>
+                <span className="block text-sm font-bold text-slate-400 uppercase">Pricing in {location.city || 'Ontario'} Starts From</span>
+                <span className="block text-4xl font-black text-slate-900">${basePrice.toLocaleString()}<span className="text-lg text-slate-500 font-medium">.00+</span></span>
               </div>
-            </div>
-
-            <div className="pt-8 border-t border-slate-100 space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
-                <input type="text" placeholder="Name" value={contact.name} onChange={e => setContact({...contact, name: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-sky-500 outline-none font-medium bg-slate-50" />
-                <input type="email" placeholder="Email" value={contact.email} onChange={e => setContact({...contact, email: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-sky-500 outline-none font-medium bg-slate-50" />
-              </div>
-              <button disabled={isSubmitting} onClick={handleBookSession} 
-                className={`w-full py-5 rounded-[1.2rem] font-bold text-lg transition-all shadow-lg active:scale-95 flex items-center justify-center ${isSubmitting ? 'bg-slate-200 text-slate-400' : 'bg-sky-500 text-white hover:bg-sky-600 shadow-sky-200'}`}>
-                {isSubmitting ? <span>Processing...</span> : <span>Book Design Session</span>}
-              </button>
             </div>
           </div>
-        </div>
 
-        <div className="relative">
-          <div className="bg-[#0f172a] text-white p-8 md:p-10 rounded-[3rem] shadow-2xl h-full flex flex-col sticky top-24 border border-white/5">
-             <div className="flex-grow space-y-8">
-                <div className="rounded-[2rem] overflow-hidden border border-white/10 bg-white p-2 shadow-xl relative cursor-zoom-in group" onClick={() => setIsEnlarged(true)}>
-                  <img src={currentImage} alt="Floor Plan" className="w-full h-auto max-h-[350px] object-contain rounded-[1.5rem] bg-white transform transition-transform group-hover:scale-105" />
-                </div>
-                
-                <div>
-                  <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2 italic">Starting Investment</p>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-3xl md:text-4xl font-bold text-white tracking-tight">{basePrice}</span>
-                    <span className="text-lg text-sky-500 font-bold">CAD</span>
-                  </div>
-                  <p className="text-slate-500 text-xs mt-4 font-medium italic opacity-80 leading-relaxed">Includes structural shell and standard install.</p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {highlights.map((h, i) => (
-                    <div key={i} className="bg-white/5 rounded-xl p-4 border border-white/5">
-                      <h4 className="text-[12px] font-bold text-sky-400 mb-1 uppercase tracking-wider">{h.title}</h4>
-                      <p className="text-[11px] text-slate-400 leading-relaxed">{h.intro}</p>
-                    </div>
+          {/* 右侧配置器区域 */}
+          <div className="bg-white p-12 rounded-[3.5rem] shadow-2xl border border-slate-100 space-y-10 relative">
+            <div className="absolute -top-6 -right-6 bg-emerald-600 text-white px-6 py-3 rounded-full font-bold text-sm shadow-lg">
+              Configurator V1.2
+            </div>
+            
+            <div className="space-y-8">
+              <div className="space-y-3">
+                <label className="text-lg font-bold text-slate-900">1. Select Suite Size (sqft)</label>
+                <div className="grid grid-cols-3 gap-4">
+                  {.map(size => (
+                    <button key={size} onClick={() => setConfig({...config, size})} className={`py-4 rounded-xl border-2 font-black text-xl transition-all ${config.size === size ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg' : 'bg-slate-50 border-slate-50 text-slate-600 hover:border-slate-200'}`}>
+                      {size}
+                    </button>
                   ))}
                 </div>
-             </div>
+              </div>
+              
+              <div className="pt-8 border-t border-slate-100 space-y-4">
+                <label className="text-lg font-bold text-slate-900">2. Share Your Contact Details</label>
+                <input type="text" placeholder="Your Full Name" value={contact.name} onChange={e => setContact({...contact, name: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-emerald-500 outline-none font-medium" />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <input type="email" placeholder="Email Address" value={contact.email} onChange={e => setContact({...contact, email: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-emerald-500 outline-none font-medium" />
+                  <input type="tel" placeholder="Phone Number" value={contact.phone} onChange={e => setContact({...contact, phone: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-emerald-500 outline-none font-medium" />
+                </div>
+              </div>
+            </div>
+
+            <button 
+              disabled={isSubmitting}
+              onClick={handleBookSession}
+              className={`w-full py-6 rounded-2xl font-black text-xl transition-all shadow-xl flex items-center justify-center space-x-3 ${isSubmitting ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-200 active:scale-95'}`}
+            >
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin h-6 w-6 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  <span>Verifying Details...</span>
+                </>
+              ) : (
+                <span>Book Free Design Session</span>
+              )}
+            </button>
           </div>
         </div>
       </div>
