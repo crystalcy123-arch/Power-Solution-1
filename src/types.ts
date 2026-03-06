@@ -2,7 +2,7 @@ export interface UserLocation {
   city: string;
   region: string;
   country: string;
-  isDetected: boolean;
+  isDetected: boolean; // 必须包含此属性以修复 App.tsx 报错
 }
 
 export type MainCategory = 'home' | 'solar' | 'adu' | 'gallery';
