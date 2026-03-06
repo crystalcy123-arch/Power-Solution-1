@@ -7,6 +7,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
+  // 品牌 Logo 下载逻辑保留
   const downloadLogo = () => {
     const svgData = `
       <svg width="1200" height="400" viewBox="0 0 1200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -37,10 +38,11 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-[100] border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+        {/* 左侧 Logo 区域 */}
         <div 
           className="flex items-center space-x-2 cursor-pointer group" 
-          onClick={downloadLogo}
-          title="点击下载完整品牌 Logo"
+          onClick={() => setActiveTab('home')} // 点击 Logo 回到首页
+          title="Return to Home / Download Logo"
         >
           <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,30 +54,36 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
           </span>
         </div>
 
+        {/* 核心导航区域 - 已添加 Home */}
         <nav className="flex items-center space-x-1 bg-slate-100 p-1 rounded-2xl border border-slate-200">
           <button 
             onClick={() => setActiveTab('home')}
-            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'home' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}
+            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'home' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            Home
+          </button>
+          <button 
+            onClick={() => setActiveTab('adu')}
+            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'adu' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
           >
             ADU Design
           </button>
           <button 
             onClick={() => setActiveTab('solar')}
-            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'solar' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}
+            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'solar' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
           >
             Solar
           </button>
           <button 
             onClick={() => setActiveTab('gallery')}
-            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'gallery' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}
+            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'gallery' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
           >
             Gallery
           </button>
         </nav>
 
-        <button className="hidden md:block bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-slate-800 transition-all text-sm">
-          Contact
-        </button>
+        {/* 右侧 Contact 按钮已根据需求移除 */}
+        <div className="w-20 hidden md:block" /> {/* 占位保持视觉平衡 */}
       </div>
     </header>
   );
