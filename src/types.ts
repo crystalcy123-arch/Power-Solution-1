@@ -40,5 +40,8 @@ export interface AIResponse {
   roiEstimate?: string;
 }
 
-// 已更新：包含 'gallery' 以支持图库板块的导航切换
-export type MainCategory = 'home' | 'solar' | 'gallery';
+/**
+ * 已更新：包含 'adu' 和 'gallery'
+ * 顺序对应导航栏：Home -> Solar -> ADU Design -> Gallery
+ */
+export type MainCategory = 'home' | 'solar' | 'adu' | 'gallery';
