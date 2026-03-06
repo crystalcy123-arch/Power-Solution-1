@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import SolarSection from './components/SolarSection';
 import ADUSection from './components/ADUSection';
+import ProcessSection from './components/ProcessSection'; // 新增：导入原生流程组件
 import GallerySection from './components/GallerySection';
 import Footer from './components/Footer';
 import { MainCategory, UserLocation } from './types';
@@ -17,22 +18,15 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
-      {/* 统一导航栏 */}
+      {/* 统一导航栏：Home -> Solar -> ADU Design -> Gallery */}
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
       
       <main className="flex-grow pt-20">
-        {/* --- 场景 1: HOME (嵌入新网页，现在支持向下滚动到页脚) --- */}
+        {/* --- 场景 1: HOME (原生化 Zero-CAPEX 流程) --- */}
         {activeTab === 'home' && (
-          <div className="w-full flex flex-col">
-            <div className="w-full h-[1200px] md:h-[2000px]"> 
-              {/* 设置足够的高度以展示嵌入页面的完整内容 */}
-              <iframe 
-                src="https://zero-carpex.vercel.app/" 
-                title="Power Solution - Home"
-                className="w-full h-full border-none"
-                loading="lazy"
-              />
-            </div>
+          <div className="animate-in fade-in duration-700">
+            {/* 彻底取代 iframe，直接渲染原生项目流程内容 */}
+            <ProcessSection />
           </div>
         )}
 
@@ -46,6 +40,7 @@ const App: React.FC = () => {
         {/* --- 场景 3: ADU DESIGN (包含原首页文字介绍) --- */}
         {activeTab === 'adu' && (
           <div className="animate-in fade-in duration-500">
+            {/* Hero 介绍文字现在仅在此板块显示，且已去掉彩色按钮 */}
             <Hero location={location} onHomeClick={() => {}} onSolarClick={() => {}} />
             <ADUSection location={location} />
           </div>
@@ -59,7 +54,7 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {/* 统一页脚：现在 Home 页面滚动到底部也会显示它 */}
+      {/* 统一页脚：固定出现在所有标签页底部 */}
       <Footer />
     </div>
   );
