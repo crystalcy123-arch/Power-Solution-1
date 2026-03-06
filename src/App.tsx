@@ -14,10 +14,10 @@ import {
   Mail, 
   Globe,
   ArrowRight,
-  CheckCircle2,
   FileDown
 } from 'lucide-react';
-import { motion } from 'motion/react';
+// 修复点 1: 确保导出路径兼容大多数 Vercel 部署环境
+import { motion } from 'framer-motion';
 
 // --- 子组件定义 ---
 
@@ -53,6 +53,9 @@ const Step = ({ number, title, description }: { number: string, title: string, d
 export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'solar' | 'adu' | 'gallery'>('home');
 
+  // 修复点 2: 定义默认位置信息，防止 ADU 渲染时报错
+  const location = { city: "St. Catharines", region: "Ontario" };
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
       
@@ -67,25 +70,25 @@ export default function App() {
           <nav className="flex items-center space-x-1 bg-slate-100 p-1 rounded-2xl border border-slate-200">
             <button 
               onClick={() => setActiveTab('home')}
-              className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'home' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}
+              className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'home' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-emerald-600'}`}
             >
               Home
             </button>
             <button 
               onClick={() => setActiveTab('solar')}
-              className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'solar' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}
+              className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'solar' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-emerald-600'}`}
             >
               Solar
             </button>
             <button 
               onClick={() => setActiveTab('adu')}
-              className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'adu' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}
+              className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'adu' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-emerald-600'}`}
             >
               ADU Design
             </button>
             <button 
               onClick={() => setActiveTab('gallery')}
-              className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'gallery' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}
+              className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'gallery' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-emerald-600'}`}
             >
               Gallery
             </button>
@@ -98,7 +101,6 @@ export default function App() {
         {/* --- HOME 标签页内容 (原生流程) --- */}
         {activeTab === 'home' && (
           <div className="animate-in fade-in duration-700">
-            {/* Hero / Introduction Area */}
             <div className="bg-emerald-900 text-white py-24 px-6 text-center relative overflow-hidden">
               <div className="absolute inset-0 opacity-10">
                 <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&q=80&w=2000" className="w-full h-full object-cover" alt="Background" />
@@ -110,7 +112,6 @@ export default function App() {
                 <p className="text-xl text-emerald-50/80 mb-12 leading-relaxed">
                   We believe the future of Ontario's grid is distributed. Power Solution is a Niagara-based Independent Power Producer (IPP) specializing in "Behind-the-Meter" solar and storage.
                 </p>
-                {/* 仅保留干净的下载按钮 */}
                 <button 
                   onClick={() => window.print()}
                   className="px-10 py-5 bg-white text-emerald-900 font-bold rounded-2xl hover:bg-emerald-50 transition-all flex items-center gap-3 mx-auto shadow-2xl"
@@ -120,7 +121,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* 原生流程步骤展示 */}
             <section className="py-24 container mx-auto px-6">
               <div className="grid md:grid-cols-3 gap-12 relative max-w-5xl mx-auto">
                 <div className="absolute left-5 top-0 bottom-0 w-px bg-slate-200 hidden md:block"></div>
@@ -150,7 +150,7 @@ export default function App() {
           </section>
         )}
 
-        {/* --- ADU DESIGN 标签页内容 (原首页文字迁移至此) --- */}
+        {/* --- ADU DESIGN 标签页内容 --- */}
         {activeTab === 'adu' && (
           <div className="animate-in fade-in duration-500">
             <section className="py-24 bg-gradient-to-br from-slate-50 to-emerald-50 text-center px-6">
@@ -162,11 +162,9 @@ export default function App() {
                 <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
                   Creating independent, smart-enabled spaces for the ones you love. We combine architectural excellence with solar-powered solutions to deliver comfortable, eco-friendly homes for Ontario families.
                 </p>
-                {/* 按钮已根据需求移除 */}
+                {/* 按钮已移除 */}
               </div>
             </section>
-            
-            {/* 可以在此下方继续添加 ADU 的详细配置组件 */}
           </div>
         )}
 
