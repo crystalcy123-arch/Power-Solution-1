@@ -52,9 +52,7 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
     notes: ''
   });
 
-  // 核心修复：处理表单提交逻辑
   const handleFinalSubmit = async () => {
-    // 基础验证
     if (!contact.email || !contact.name) {
       alert("Please provide your name and email.");
       return;
@@ -62,14 +60,13 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
 
     setIsSubmitting(true);
 
-    // 根据模式准备数据负载
     const specificData = mode === 'residential' 
       ? { ...resNeeds, postalCode: resPostalCode, serviceType: 'Residential Solar' }
       : { ...comNeeds, serviceType: 'Commercial Solar' };
 
     const payload = {
       _subject: `Solar Energy Quote Request - ${location.city}`,
-      _gotcha: "", // Honeypot 字段，防止 Formspree 将其判定为 Spam
+      _gotcha: "", 
       category: "Solar Inquiry",
       ...specificData,
       customerName: contact.name,
@@ -80,7 +77,6 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
     };
 
     try {
-      // 使用您的新 Formspree ID xreadzbr
       const response = await fetch("https://formspree.io/f/xreadzbr", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -89,7 +85,6 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
 
       if (response.ok) {
         setShowSuccess(true);
-        // 成功后重置表单
         setContact({ name: '', email: '', phone: '' });
         setResPostalCode('');
       } else {
@@ -103,10 +98,11 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4">
+    <section className="max-w-7xl mx-auto px-4 space-y-24">
       <SuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} />
       
-      <div className="grid lg:grid-cols-2 gap-16">
+      {/* 顶部交互表单区域 */}
+      <div className="grid lg:grid-cols-2 gap-16 items-start">
         <div className="space-y-10">
           <div className="flex flex-col space-y-6">
             <h2 className="text-4xl font-heading font-extrabold text-slate-900">Power Your Future with <span className="text-emerald-600">Solar Energy.</span></h2>
@@ -192,7 +188,7 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
 
                 <button 
                   disabled={isSubmitting}
-                  onClick={handleFinalSubmit} // 已修复：现在正确调用提交逻辑
+                  onClick={handleFinalSubmit}
                   className={`w-full py-6 rounded-2xl font-black text-xl transition-all shadow-xl flex items-center justify-center space-x-3 active:scale-95 ${isSubmitting ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-200'}`}
                 >
                   {isSubmitting ? (
@@ -208,8 +204,8 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
           </div>
         </div>
 
-        <div className="relative">
-          <div className="h-full rounded-[3.5rem] overflow-hidden border-4 border-white bg-white flex flex-col items-center justify-center min-h-[600px] sticky top-24 shadow-2xl">
+        <div className="relative lg:sticky lg:top-24">
+          <div className="h-full rounded-[3.5rem] overflow-hidden border-4 border-white bg-white flex flex-col items-center justify-center min-h-[500px] shadow-2xl">
             <img src={mode === 'residential' ? "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&q=80&w=1200" : "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&q=80&w=1200"} alt="Solar" className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
             <div className="relative z-10 p-12 text-white w-full mt-auto">
@@ -220,6 +216,40 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* 核心修复：插入 Zero-CAPEX 流程嵌入窗口 */}
+      <div className="space-y-12">
+        <div className="text-center space-y-4">
+          <h2 className="text-4xl font-heading font-extrabold text-slate-900">
+            Our <span className="text-emerald-600">Zero-CAPEX</span> Process
+          </h2>
+          <p className="text-slate-600 text-lg max-w-2xl mx-auto">
+            Discover how we bridge the gap between grid dependence and energy independence through our structured development model.
+          </p>
+        </div>
+
+        <div className="w-full h-[700px] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-slate-100 bg-white relative">
+          <iframe 
+            src="https://zero-carpex.vercel.app/#process" 
+            title="Zero-CAPEX Solar Process"
+            className="w-full h-full border-none"
+            loading="lazy"
+          />
+          {/* PDF 下载提示叠加层 */}
+          <div className="absolute bottom-6 right-6 pointer-events-none">
+            <div className="bg-slate-900/80 backdrop-blur-md text-white px-6 py-3 rounded-2xl text-sm font-bold shadow-xl flex items-center space-x-2">
+              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Download Full PDF Inside the Window</span>
+            </div>
+          </div>
+        </div>
+        
+        <p className="text-center text-slate-400 text-sm italic font-medium">
+          * Interactive window optimized for desktop. For mobile users, use the pinch-to-zoom feature.
+        </p>
       </div>
     </section>
   );
