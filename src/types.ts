@@ -2,10 +2,8 @@ export interface UserLocation {
   city: string;
   region: string;
   country: string;
-  isDetected: boolean; // 必须包含此属性以修复 App.tsx 报错
+  isDetected: boolean;
 }
-
-export type MainCategory = 'home' | 'solar' | 'adu' | 'gallery';
 
 export interface ADUConfig {
   size: 'studio' | '1-bedroom' | '2-bedroom';
@@ -25,6 +23,7 @@ export interface SolarNeeds {
 }
 
 export interface CommercialNeeds {
+  // 支持商业太阳能的多样化设施类型
   facilityType: 'industrial' | 'office' | 'retail' | 'multi-unit' | 'farm' | 'others';
   squareFootage: number;
   primaryGoal: 'cost-reduction' | 'esg-compliance' | 'energy-resilience';
@@ -34,8 +33,12 @@ export interface CommercialNeeds {
 }
 
 export interface AIResponse {
+  // 支撑双向 AI 报告逻辑的核心接口
   summary: string;
   recommendations: string[];
   estimatedCostRange: string;
   roiEstimate?: string;
 }
+
+// 已更新：包含 'gallery' 以支持图库板块的导航切换
+export type MainCategory = 'home' | 'solar' | 'gallery';
