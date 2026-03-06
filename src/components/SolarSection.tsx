@@ -218,7 +218,7 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
         </div>
       </div>
 
-      {/* 核心修复：插入 Zero-CAPEX 流程嵌入窗口 */}
+      {/* 嵌入窗口区域 */}
       <div className="space-y-12">
         <div className="text-center space-y-4">
           <h2 className="text-4xl font-heading font-extrabold text-slate-900">
@@ -236,15 +236,6 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
             className="w-full h-full border-none"
             loading="lazy"
           />
-          {/* PDF 下载提示叠加层 */}
-          <div className="absolute bottom-6 right-6 pointer-events-none">
-            <div className="bg-slate-900/80 backdrop-blur-md text-white px-6 py-3 rounded-2xl text-sm font-bold shadow-xl flex items-center space-x-2">
-              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <span>Download Full PDF Inside the Window</span>
-            </div>
-          </div>
         </div>
         
         <p className="text-center text-slate-400 text-sm italic font-medium">
