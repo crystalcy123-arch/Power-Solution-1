@@ -10,42 +10,24 @@ import { MainCategory, UserLocation } from './types';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<MainCategory>('home');
-  
   const [location] = useState<UserLocation>({
-    city: 'St. Catharines',
-    region: 'ON',
-    country: 'Canada',
-    isDetected: true // 补全属性以通过 TS 编译
+    city: 'St. Catharines', region: 'ON', country: 'Canada', isDetected: true 
   });
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-      
       <main className="flex-grow pt-20">
         {activeTab === 'home' && <ProcessSection />}
-        
-        {activeTab === 'solar' && (
-          <div className="animate-in fade-in duration-500">
-            <SolarSection location={location} />
-          </div>
-        )}
-
+        {activeTab === 'solar' && <SolarSection location={location} />}
         {activeTab === 'adu' && (
           <div className="animate-in fade-in duration-500">
-            {/* 原首页文字迁移至 ADU 板块 */}
             <Hero location={location} onHomeClick={() => {}} onSolarClick={() => {}} />
             <ADUSection location={location} />
           </div>
         )}
-
-        {activeTab === 'gallery' && (
-          <div className="animate-in fade-in duration-500">
-            <GallerySection />
-          </div>
-        )}
+        {activeTab === 'gallery' && <GallerySection />}
       </main>
-
       <Footer />
     </div>
   );
