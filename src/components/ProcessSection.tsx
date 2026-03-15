@@ -23,7 +23,9 @@ const ProcessSection: React.FC = () => {
         <div className="space-y-6">
           <h2 className="text-sm font-bold text-emerald-600 uppercase tracking-widest">About Us</h2>
           <h3 className="text-4xl font-black text-slate-900 leading-tight">We believe the future of Ontario's grid is distributed.</h3>
-          <p className="text-slate-600 text-lg leading-relaxed">Power Solution is a Niagara-based Independent Power Developer specializing in "Behind-the-Meter" solar and storage solutions.</p>
+          <p className="text-slate-600 text-lg leading-relaxed">Power Solution is a Niagara-based Independent Power Developer specializing in "Behind-the-Meter" solar and storage solutions. Our mission is to make energy independence accessible through a unique Zero-CAPEX model, allowing all businesses to lower their carbon footprint and electricity bills without upfront costs.
+
+With 20+ years of large consultant company and Ontario Hydro experience, we bridge the gap between global technology and local application.</p>
         </div>
         <div className="aspect-square rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white">
           <img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover" alt="Solar Building" />
