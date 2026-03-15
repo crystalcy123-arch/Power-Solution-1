@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { SolarNeeds, CommercialNeeds, UserLocation } from '../types';
 
 interface SolarSectionProps {
@@ -98,15 +98,19 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 space-y-24">
+    <section className="max-w-7xl mx-auto px-4 py-12 space-y-24">
       <SuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} />
       
-      {/* 顶部交互表单区域 */}
+      {/* 顶部交互表单区域 - 完整保留 */}
       <div className="grid lg:grid-cols-2 gap-16 items-start">
         <div className="space-y-10">
           <div className="flex flex-col space-y-6">
-            <h2 className="text-4xl font-heading font-extrabold text-slate-900">Power Your Future with <span className="text-emerald-600">Solar Energy.</span></h2>
-            <p className="text-slate-600 text-lg leading-relaxed max-w-xl">From residential rooftop arrays to industrial-scale energy ecosystems, we deliver high-yield solar solutions across Canada.</p>
+            <h2 className="text-4xl font-heading font-extrabold text-slate-900">
+              Power Your Future with <span className="text-emerald-600">Solar Energy.</span>
+            </h2>
+            <p className="text-slate-600 text-lg leading-relaxed max-w-xl">
+              From residential rooftop arrays to industrial-scale energy ecosystems, we deliver high-yield solar solutions across Canada.
+            </p>
             
             {mode === 'residential' && (
               <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-xl">
@@ -216,31 +220,6 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* 嵌入窗口区域 */}
-      <div className="space-y-12">
-        <div className="text-center space-y-4">
-          <h2 className="text-4xl font-heading font-extrabold text-slate-900">
-            Our <span className="text-emerald-600">Zero-CAPEX</span> Process
-          </h2>
-          <p className="text-slate-600 text-lg max-w-2xl mx-auto">
-            Discover how we bridge the gap between grid dependence and energy independence through our structured development model.
-          </p>
-        </div>
-
-        <div className="w-full h-[700px] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-slate-100 bg-white relative">
-          <iframe 
-            src="https://zero-carpex.vercel.app/#process" 
-            title="Zero-CAPEX Solar Process"
-            className="w-full h-full border-none"
-            loading="lazy"
-          />
-        </div>
-        
-        <p className="text-center text-slate-400 text-sm italic font-medium">
-          * Interactive window optimized for desktop. For mobile users, use the pinch-to-zoom feature.
-        </p>
       </div>
     </section>
   );
