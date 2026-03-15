@@ -5,6 +5,8 @@ export interface UserLocation {
   isDetected: boolean;
 }
 
+export type MainCategory = 'home' | 'solar' | 'adu' | 'gallery';
+
 export interface ADUConfig {
   size: 'studio' | '1-bedroom' | '2-bedroom';
   intendedUse: 'rental' | 'family' | 'office' | 'guest-house';
@@ -21,21 +23,3 @@ export interface SolarNeeds {
   roofType: string;
   energyPriority: 'savings' | 'independence' | 'environment';
 }
-
-export interface CommercialNeeds {
-  facilityType: 'industrial' | 'office' | 'retail' | 'multi-unit' | 'farm' | 'others';
-  squareFootage: number;
-  primaryGoal: 'cost-reduction' | 'esg-compliance' | 'energy-resilience';
-  monthlyBill?: number;
-  postalCode?: string;
-  notes?: string;
-}
-
-export interface AIResponse {
-  summary: string;
-  recommendations: string[];
-  estimatedCostRange: string;
-  roiEstimate?: string;
-}
-
-export type MainCategory = 'home' | 'solar' | 'adu' | 'gallery';
