@@ -1,4 +1,5 @@
 import React from 'react';
+// 修复点：确保这些图标在您的 package.json 依赖中已安装
 import { TrendingDown, Shield, Wrench, GraduationCap } from 'lucide-react';
 
 const ProcessSection: React.FC = () => {
@@ -25,7 +26,6 @@ const ProcessSection: React.FC = () => {
             No upfront costs, just immediate savings.
           </p>
           
-          {/* 已将原本的 Download PDF 替换为 20% Guaranteed Savings 标签 */}
           <div className="flex justify-center">
             <div className="flex items-center gap-3 px-8 py-4 bg-emerald-950/40 border border-white/20 rounded-2xl backdrop-blur-sm shadow-xl">
               <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.6)]" />
@@ -35,16 +35,26 @@ const ProcessSection: React.FC = () => {
         </div>
       </section>
 
-      {/* About Us Section */}
+      {/* About Us Section - 已增加选中的两段内容 */}
       <section className="py-24 max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
         <div className="space-y-6">
           <h2 className="text-sm font-bold text-emerald-600 uppercase tracking-widest">About Us</h2>
           <h3 className="text-4xl font-black text-slate-900 leading-tight">
             We believe the future of Ontario's grid is distributed.
           </h3>
-          <p className="text-slate-600 text-lg leading-relaxed">
-            Power Solution is a Niagara-based Independent Power Producer (IPP) specializing in "Behind-the-Meter" solar and storage solutions.
-          </p>
+          <div className="space-y-4 text-slate-600 text-lg leading-relaxed">
+            <p>
+              Power Solution is a Niagara-based Independent Power Producer (IPP) specializing in "Behind-the-Meter" solar and storage solutions.
+            </p>
+            {/* 新增段落 1 */}
+            <p className="font-medium text-slate-900">
+              Our mission is to make energy independence accessible through a unique Zero-CAPEX model, allowing all businesses to lower their carbon footprint and electricity bills without upfront costs.
+            </p>
+            {/* 新增段落 2 */}
+            <p>
+              With 20+ years of large consultant company and Ontario Hydro experience, we bridge the gap between global technology and local application.
+            </p>
+          </div>
         </div>
         <div className="aspect-square rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white">
           <img 
