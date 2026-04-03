@@ -2,7 +2,7 @@ export interface UserLocation {
   city: string;
   region: string;
   country: string;
-  isDetected: boolean;
+  isDetected: boolean; // 补全此属性以修复 App.tsx 状态初始化报错
 }
 
 export interface ADUConfig {
@@ -23,6 +23,7 @@ export interface SolarNeeds {
 }
 
 export interface CommercialNeeds {
+  // 支持商业太阳能及储能的多样化设施类型
   facilityType: 'industrial' | 'office' | 'retail' | 'multi-unit' | 'farm' | 'others';
   squareFootage: number;
   primaryGoal: 'cost-reduction' | 'esg-compliance' | 'energy-resilience';
@@ -38,5 +39,8 @@ export interface AIResponse {
   roiEstimate?: string;
 }
 
-// 已更新：包含 'adu' 以支持导航切换，修复编译错误。
+/**
+ * 已更新：包含 'adu' 以支持导航切换并修复编译错误
+ * 同时将 'solar' 更新为 'solar & BESS' 以匹配右上角标题更改需求
+ */
 export type MainCategory = 'home' | 'solar & BESS' | 'adu' | 'gallery';
