@@ -84,7 +84,7 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
       ? { ...resNeeds, postalCode: resPostalCode, serviceType: 'Residential Solar & BESS' }
       : { ...comNeeds, serviceType: 'Commercial Solar & BESS' };
     const payload = {
-      _subject: `Solar & BESS Quote Request - ${location.city}`,
+      _subject: `Solar & Battery Energy Storage System(BESS) Quote Request - ${location.city}`,
       _gotcha: "", 
       category: "Solar & BESS Inquiry",
       ...specificData,
