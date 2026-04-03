@@ -81,10 +81,10 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
     }
     setIsSubmitting(true);
     const specificData = mode === 'residential' 
-      ? { ...resNeeds, postalCode: resPostalCode, serviceType: 'Residential Solar & BESS' }
-      : { ...comNeeds, serviceType: 'Commercial Solar & BESS' };
+      ? { ...resNeeds, postalCode: resPostalCode, serviceType: 'Residential Solar & Battery Energy Storage System (BESS)' }
+      : { ...comNeeds, serviceType: 'Commercial Solar & Battery Energy Storage System (BESS)' };
     const payload = {
-      _subject: `Solar & Battery Energy Storage System(BESS) Quote Request - ${location.city}`,
+      _subject: `Solar & BESS Quote Request - ${location.city}`,
       _gotcha: "", 
       category: "Solar & BESS Inquiry",
       ...specificData,
@@ -110,7 +110,6 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
     } finally { setIsSubmitting(false); }
   };
 
-  // FAQ 内容
   const techFAQs = [
     { q: "How is Power Solution different from a standard solar or battery installer?", a: "We are an Engineering-led Strategic Partner, not just a contractor. Most installers focus on \"dropping a box\" and walking away. As a firm led by a P.Eng with a Ph.D. in engineering, we focus on the Revenue Lifecycle. We are your partner, sharing the profit. We don’t just install hardware; we design a custom financial engine for your facility." },
     { q: "If your battery fails, does my assembly line or refrigeration plant shut down?", a: "Absolutely not. Our system runs in parallel with the local utility grid. It acts as a supplemental power source, not a bottleneck. If our inverter goes offline or the battery depletes, your facility seamlessly and instantly defaults back to 100% utility power." },
@@ -130,12 +129,12 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
     <section className="max-w-7xl mx-auto px-4 py-12 space-y-32">
       <SuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} />
       
-      {/* 顶部交互表单区域 - 标题已更新为 Solar & BESS */}
+      {/* 顶部表单区域 - 标题已更新为完整全称 */}
       <div className="grid lg:grid-cols-2 gap-16 items-start">
         <div className="space-y-10">
           <div className="flex flex-col space-y-6">
-            <h2 className="text-4xl font-heading font-extrabold text-slate-900">
-              Power Your Future with <span className="text-emerald-600">Solar & BESS.</span>
+            <h2 className="text-4xl font-heading font-extrabold text-slate-900 leading-tight">
+              Power Your Future with <span className="text-emerald-600">Solar & Battery Energy Storage System (BESS).</span>
             </h2>
             <p className="text-slate-600 text-lg leading-relaxed max-w-xl">
               From residential rooftop arrays to industrial-scale energy ecosystems, we deliver high-yield solar and battery storage solutions across Canada.
@@ -151,8 +150,8 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
              <div className="space-y-6">
                 {mode === 'residential' ? (
                   <div className="grid md:grid-cols-2 gap-6">
-                    <input type="number" placeholder="Total Monthly Bill ($)" value={resNeeds.monthlyBill || ''} onChange={e => setResNeeds({...resNeeds, monthlyBill: parseInt(e.target.value) || 0})} className="w-full p-5 rounded-xl border-2 border-slate-100 font-bold text-slate-900 bg-slate-50 focus:border-emerald-500 outline-none transition-colors" />
-                    <input type="text" placeholder="Postal Code" value={resPostalCode} onChange={e => setResPostalCode(e.target.value.toUpperCase())} className="w-full p-5 rounded-xl border-2 border-slate-100 font-bold text-slate-900 bg-slate-50 focus:border-emerald-500 outline-none transition-colors" />
+                    <input type="number" placeholder="Total Monthly Bill ($)" value={resNeeds.monthlyBill || ''} onChange={e => setResNeeds({...resNeeds, monthlyBill: parseInt(e.target.value) || 0})} className="w-full p-5 rounded-xl border-2 border-slate-100 font-bold bg-slate-50 focus:border-emerald-500 outline-none transition-colors" />
+                    <input type="text" placeholder="Postal Code" value={resPostalCode} onChange={e => setResPostalCode(e.target.value.toUpperCase())} className="w-full p-5 rounded-xl border-2 border-slate-100 font-bold bg-slate-50 focus:border-emerald-500 outline-none transition-colors" />
                   </div>
                 ) : (
                   <div className="space-y-6">
@@ -170,11 +169,11 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
                 )}
                 <div className="pt-6 border-t border-slate-100 space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
-                    <input type="text" placeholder="Full Name" value={contact.name} onChange={e => setContact({...contact, name: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-emerald-500 outline-none font-medium" />
-                    <input type="email" placeholder="Email Address" value={contact.email} onChange={e => setContact({...contact, email: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-emerald-500 outline-none font-medium" />
+                    <input type="text" placeholder="Full Name" value={contact.name} onChange={e => setContact({...contact, name: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-emerald-500 outline-none" />
+                    <input type="email" placeholder="Email Address" value={contact.email} onChange={e => setContact({...contact, email: e.target.value})} className="w-full p-4 rounded-xl border border-slate-200 focus:border-emerald-500 outline-none" />
                   </div>
                 </div>
-                <button disabled={isSubmitting} onClick={handleFinalSubmit} className={`w-full py-6 rounded-2xl font-black text-xl transition-all shadow-xl flex items-center justify-center space-x-3 active:scale-95 ${isSubmitting ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-200'}`}>
+                <button disabled={isSubmitting} onClick={handleFinalSubmit} className={`w-full py-6 rounded-2xl font-black text-xl transition-all shadow-xl flex items-center justify-center space-x-3 active:scale-95 ${isSubmitting ? 'bg-slate-200 text-slate-400' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}>
                   {isSubmitting ? ( <span>Submitting...</span> ) : ( <span>Submit Request</span> )}
                 </button>
              </div>
@@ -187,15 +186,15 @@ const SolarSection: React.FC<SolarSectionProps> = ({ location }) => {
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
             <div className="relative z-10 p-12 text-white w-full mt-auto">
                <div className="bg-emerald-500/10 backdrop-blur-md border border-white/20 p-8 rounded-3xl">
-                  <h3 className="text-3xl font-black mb-4 uppercase tracking-tight">BESS Infrastructure</h3>
-                  <p className="text-white/80 font-medium italic">High-efficiency storage engineered for the Canadian climate.</p>
+                  {/* 图片文字已换回原来的 Solar 内容 */}
+                  <h3 className="text-3xl font-black mb-4 uppercase tracking-tight">Solar Infrastructure</h3>
+                  <p className="text-white/80 font-medium italic">High-efficiency arrays engineered for the Canadian climate.</p>
                </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Q&A 板块 */}
       <div className="space-y-16 pt-12">
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-bold border border-emerald-100">
