@@ -39,4 +39,4 @@ export interface AIResponse {
 }
 
 // 已更新：包含 'adu' 以支持导航切换，修复编译错误。
-export type MainCategory = 'home' | 'solar' | 'adu' | 'gallery';
+export type MainCategory = 'home' | 'solar & BESS' | 'adu' | 'gallery';
