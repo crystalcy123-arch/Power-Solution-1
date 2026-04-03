@@ -11,7 +11,7 @@ import { MainCategory, UserLocation } from './types';
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<MainCategory>('home');
   
-  // 修复点：补全 isDetected 属性
+  // 修复点：补全 isDetected 属性以消除 TS2345 报错
   const [location] = useState<UserLocation>({
     city: 'St. Catharines',
     region: 'ON',
@@ -24,10 +24,14 @@ const App: React.FC = () => {
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
       
       <main className="flex-grow pt-20">
-        {/* HOME 标签页：已原生化集成了 Benefits 板块 */}
         {activeTab === 'home' && <ProcessSection />}
 
-        {activeTab === 'solar' && <SolarSection location={location} />}
+        {/* 关键修复：这里的判断字符串必须与 Header 传过来的完全一致 */}
+        {activeTab === 'solar & BESS' && (
+          <div className="animate-in fade-in duration-500">
+            <SolarSection location={location} />
+          </div>
+        )}
 
         {activeTab === 'adu' && (
           <div className="animate-in fade-in duration-500">
@@ -36,7 +40,11 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'gallery' && <GallerySection />}
+        {activeTab === 'gallery' && (
+          <div className="animate-in fade-in duration-500">
+            <GallerySection />
+          </div>
+        )}
       </main>
 
       <Footer />
