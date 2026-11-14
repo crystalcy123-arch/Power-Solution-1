@@ -1,93 +1,318 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Power Solution | EcoSmart Living</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Power Solution | Battery Storage for Ontario Class A Customers</title>
+<meta name="description" content="Power Solution finances, builds and operates battery energy storage behind your meter to cut Global Adjustment charges for Ontario Class A customers.">
 
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@^19.2.4",
-        "react-dom": "https://esm.sh/react-dom@^19.2.4",
-        "react-dom/client": "https://esm.sh/react-dom@^19.2.4/client",
-        "react/": "https://esm.sh/react@^19.2.4/",
-        "@google/genai": "https://esm.sh/@google/genai@^1.41.0"
-      }
-    }
-    </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F6F5}
+a{color:#047857}
+a:hover{color:#065F46}
+.nav-link{color:#0F2530;text-decoration:none;font-size:15px;font-weight:500}
+.nav-link:hover{color:#047857}
+.btn-primary{display:inline-block;background:#F2A93B;color:#0F2530;text-decoration:none;font-weight:700;padding:15px 26px;border-radius:6px;font-size:16px}
+.btn-primary:hover{background:#FFBC57;color:#0F2530}
+.btn-ghost{display:inline-block;color:#FFFFFF;text-decoration:none;font-weight:600;padding:13px 24px;border-radius:6px;font-size:16px;border:2px solid #5E8590}
+.btn-ghost:hover{border-color:#F2A93B;color:#F2A93B}
+a:focus-visible,summary:focus-visible{outline:3px solid #F2A93B;outline-offset:3px}
+details{border-top:1px solid #C9D5D8;padding:20px 0}
+details:last-of-type{border-bottom:1px solid #C9D5D8}
+summary{cursor:pointer;font-family:'Archivo',Arial,sans-serif;font-weight:600;font-size:19px;color:#0F2530;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';font-size:24px;line-height:1;color:#047857}
+details[open] summary::after{content:'\2212'}
+details p{margin:12px 0 0;font-size:17px;line-height:1.6;color:#3F535C;max-width:720px}
+</style>
 
-    <link rel="stylesheet" href="/index.css">
+<style>html{scroll-behavior:smooth}</style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body>
 
-    <div id="root"></div>
 
-    <div id="successModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-2xl text-center max-w-sm mx-4 shadow-2xl">
-            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">✓</div>
-            <h2 class="text-2xl font-bold mb-2 text-slate-800">Submitted!</h2>
-            <p class="text-slate-500 mb-6 text-sm">Your request has been received. Our team will contact you shortly.</p>
-            <button onclick="closeModal()" class="w-full bg-[#1B4332] text-white py-2 rounded-lg font-semibold hover:bg-opacity-90 transition">
-                Great!
-            </button>
-        </div>
+<div style="font-family:'Source Sans 3',Arial,sans-serif;color:#0F2530;background:#F3F6F5;min-width:0">
+
+  <!-- NAV: white band so the supplied logo (white background) sits cleanly -->
+  <div style="background:#FFFFFF;border-bottom:1px solid #D5E0E3">
+    <div style="max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 32px;min-height:84px">
+      <a href="#top" style="display:flex;align-items:center" aria-label="Power Solution home">
+        <img src="/Power%20Solution%20LogoB.png" alt="Power Solution" style="height:52px;width:auto;display:block;max-width:100%">
+      </a>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px">
+        <a class="nav-link" href="#what">What we do</a>
+        <a class="nav-link" href="#classa">Class A</a>
+        <a class="nav-link" href="#how">How it works</a>
+        <a class="nav-link" href="#safety">Safety</a>
+        <a class="nav-link" href="#faq">FAQ</a>
+        <a class="btn-primary" href="#contact" style="padding:10px 18px;font-size:15px">Free assessment</a>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // 定义关闭弹窗函数
-        function closeModal() {
-            const modal = document.getElementById('successModal');
-            if (modal) modal.classList.add('hidden');
-        }
+  <!-- HERO: dark band, headline left, peak-shaving chart right -->
+  <div style="background:#0F2530;color:#FFFFFF">
+    <div style="max-width:1240px;margin:0 auto;padding:0 24px">
 
-        // 监听表单提交（通过事件委托处理 React 渲染的表单）
-        document.addEventListener('submit', async function(e) {
-            if (e.target && e.target.id === 'contactForm') {
-                e.preventDefault();
-                
-                const btn = document.getElementById('submitBtn');
-                const modal = document.getElementById('successModal');
-                
-                if (btn) {
-                    btn.disabled = true;
-                    btn.style.opacity = "0.7";
-                    btn.innerText = "Processing...";
-                }
+      <div id="top" style="display:flex;flex-wrap:wrap;align-items:center;gap:48px;padding:56px 0 72px">
+        <div style="flex:1 1 480px;min-width:0">
+          <div style="font-size:14px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#F2A93B">Battery energy storage for Ontario Class A customers</div>
+          <h1 style="font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:clamp(34px,5vw,56px);line-height:1.08;margin:18px 0 0;text-wrap:balance">Cut your Global Adjustment bill with battery storage we finance, build and operate.</h1>
+          <p style="font-size:20px;line-height:1.55;color:#C9D8DD;margin:22px 0 0;max-width:600px">Power Solution places a battery behind your meter and discharges it during Ontario&#39;s peak hours. You pay nothing upfront. You share only the savings measured on your own meter.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:32px">
+            <a class="btn-primary" href="#contact">Request a free assessment</a>
+            <a class="btn-ghost" href="#how">See how it works</a>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:34px;font-size:15px;color:#9FB6BD">
+            <span>Engineer-led (P.Eng.)</span>
+            <span>Niagara Region, Ontario</span>
+            <span>No capital from you</span>
+            <span>Savings verified on your meter</span>
+          </div>
+        </div>
 
-                const formData = new FormData(e.target);
-                
-                try {
-                    const response = await fetch("https://formspree.io/f/xpqjrjyz", {
-                        method: 'POST',
-                        body: formData,
-                        headers: { 'Accept': 'application/json' }
-                    });
+        <div style="flex:1 1 400px;min-width:0;background:#16394A;border-radius:12px;padding:26px 26px 22px">
+          <div style="font-family:'Archivo',Arial,sans-serif;font-weight:600;font-size:17px">A battery flattens the peak that sets your charges</div>
+          <div style="font-size:14px;color:#9FB6BD;margin-top:4px">Illustrative 24-hour load for an industrial site</div>
+          <div style="position:relative;height:200px;margin-top:22px;display:flex;align-items:flex-end;gap:3px;border-bottom:1px solid #5E8590">
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:83px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:79px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:77px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:77px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:81px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:94px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:112px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:133px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:7px;background:#F2A93B"></div><div style="height:144px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:18px;background:#F2A93B"></div><div style="height:144px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:25px;background:#F2A93B"></div><div style="height:144px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:31px;background:#F2A93B"></div><div style="height:144px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:32px;background:#F2A93B"></div><div style="height:144px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:36px;background:#F2A93B"></div><div style="height:144px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:34px;background:#F2A93B"></div><div style="height:144px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:31px;background:#F2A93B"></div><div style="height:144px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:27px;background:#F2A93B"></div><div style="height:144px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:18px;background:#F2A93B"></div><div style="height:144px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:140px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:119px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:104px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:94px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:88px;background:#34B58A"></div></div>
+            <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:0px;background:#F2A93B"></div><div style="height:85px;background:#34B58A"></div></div>
+            <div style="position:absolute;left:0;right:0;bottom:144px;border-top:2px dashed #FFFFFF"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:#9FB6BD;margin-top:6px">
+            <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:18px;font-size:14px;color:#D3E0E4">
+            <span style="display:flex;align-items:center;gap:8px"><span style="width:14px;height:14px;background:#34B58A;display:inline-block"></span>Supplied from the grid</span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="width:14px;height:14px;background:#F2A93B;display:inline-block"></span>Covered by the battery</span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:0;border-top:2px dashed #FFFFFF;display:inline-block"></span>New peak</span>
+          </div>
+          <div style="font-size:13px;color:#9FB6BD;margin-top:14px;line-height:1.5">Illustration only. Your free assessment uses your own interval data.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                    if (response.ok) {
-                        if (modal) modal.classList.remove('hidden');
-                        e.target.reset();
-                    } else {
-                        alert("Submission failed. Please check your Formspree ID.");
-                    }
-                } catch (error) {
-                    alert("Network error. Please try again later.");
-                } finally {
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.style.opacity = "1";
-                        btn.innerText = "Start My Home Analysis";
-                    }
-                }
-            }
-        });
-    </script>
+  <!-- WHAT WE DO -->
+  <div id="what" style="padding:80px 0 72px">
+    <div style="max-width:1240px;margin:0 auto;padding:0 24px">
+      <h2 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:clamp(28px,3.6vw,40px);margin:0;max-width:760px;text-wrap:balance">What we do, in one minute</h2>
+      <p style="font-size:19px;line-height:1.55;color:#3F535C;margin:14px 0 0;max-width:720px">We handle the whole battery project for large electricity users, from sizing to daily operation, and take our fee from the savings.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:24px;margin-top:40px">
+        <div style="flex:1 1 300px;min-width:0;background:#FFFFFF;border:1px solid #D5E0E3;border-radius:10px;padding:28px">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 31h30"/><path d="M7 27l7-9 6 5 6-11 7 8"/></svg>
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:22px;margin:18px 0 0">Size it to your load</h3>
+          <p style="font-size:17px;line-height:1.6;color:#3F535C;margin:10px 0 0">We study 12 months of your interval data and size the battery to the peaks that drive your bill.</p>
+        </div>
+        <div style="flex:1 1 300px;min-width:0;background:#FFFFFF;border:1px solid #D5E0E3;border-radius:10px;padding:28px">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="12" width="26" height="16" rx="3"/><path d="M32 17h3v6h-3"/><path d="M12 17v6M17 17v6M22 17v6"/></svg>
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:22px;margin:18px 0 0">Finance and build it</h3>
+          <p style="font-size:17px;line-height:1.6;color:#3F535C;margin:10px 0 0">We arrange the financing, engineering, permits and utility connection. A licensed electrical contractor installs it.</p>
+        </div>
+        <div style="flex:1 1 300px;min-width:0;background:#FFFFFF;border:1px solid #D5E0E3;border-radius:10px;padding:28px">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="20" cy="20" r="14"/><path d="M20 11v9l6 4"/></svg>
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:22px;margin:18px 0 0">Operate it and share savings</h3>
+          <p style="font-size:17px;line-height:1.6;color:#3F535C;margin:10px 0 0">Our software predicts Ontario&#39;s peak hours and discharges then. We monitor, maintain and insure the system. You pay from verified savings.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <script type="module" src="/src/index.tsx"></script>
+  <!-- CLASS A -->
+  <div id="classa" style="background:#FFFFFF;border-top:1px solid #D5E0E3;border-bottom:1px solid #D5E0E3;padding:80px 0">
+    <div style="max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;gap:56px">
+      <div style="flex:1 1 460px;min-width:0">
+        <h2 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:clamp(28px,3.6vw,40px);margin:0;text-wrap:balance">Why Class A customers use storage</h2>
+        <p style="font-size:18px;line-height:1.65;color:#3F535C;margin:18px 0 0;max-width:620px">Under the Industrial Conservation Initiative, a Class A customer pays Global Adjustment based on its share of demand during the province&#39;s highest-demand hours. A battery that discharges during those hours lowers that share.</p>
+        <p style="font-size:18px;line-height:1.65;color:#3F535C;margin:16px 0 0;max-width:620px">Lower peak demand can also reduce the demand charges on your delivery bill. The assessment shows how much of each applies to your site.</p>
+        <div style="margin-top:28px;border-left:4px solid #F2A93B;padding:4px 0 4px 18px;max-width:560px">
+          <div style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:20px">Typically 10 to 20% off your total electricity bill</div>
+          <div style="font-size:15px;line-height:1.5;color:#3F535C;margin-top:6px">Indicative range. The exact figure comes from your own metered data, and we do not guarantee it.</div>
+        </div>
+      </div>
+      <div style="flex:1 1 400px;min-width:0;background:#F3F6F5;border-radius:12px;padding:30px">
+        <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:22px;margin:0">Is your site a fit?</h3>
+        <div style="display:flex;flex-direction:column;gap:18px;margin-top:20px">
+          <div style="display:flex;gap:14px"><span style="flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:#047857;margin-top:9px"></span><div style="font-size:17px;line-height:1.55"><strong>Class A.</strong> Average peak demand of about 1 MW or more, including eligible sites in the 500 kW to 1 MW range that have opted in.</div></div>
+          <div style="display:flex;gap:14px"><span style="flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:#047857;margin-top:9px"></span><div style="font-size:17px;line-height:1.55"><strong>Large Class B.</strong> Demand charges may still justify storage. The assessment tells you.</div></div>
+          <div style="display:flex;gap:14px"><span style="flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:#047857;margin-top:9px"></span><div style="font-size:17px;line-height:1.55"><strong>Not sure?</strong> Send us your facility address. We check your class and eligibility against current IESO rules.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OFFER -->
+  <div id="offer" style="padding:80px 0">
+    <div style="max-width:1240px;margin:0 auto;padding:0 24px">
+      <h2 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:clamp(28px,3.6vw,40px);margin:0;text-wrap:balance">No capital. No operating risk.</h2>
+      <p style="font-size:19px;line-height:1.55;color:#3F535C;margin:14px 0 0;max-width:720px">We own and operate the system on your site under a shared-savings agreement. A 1 MW / 2 MWh battery is typically a CAD 2 to 3 million investment, and it stays on our balance sheet.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:24px;margin-top:40px">
+        <div style="flex:1 1 440px;min-width:0;background:#047857;color:#FFFFFF;border-radius:12px;padding:32px">
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:24px;margin:0">What you keep</h3>
+          <ul style="margin:18px 0 0;padding:0 0 0 22px;font-size:18px;line-height:1.65;display:flex;flex-direction:column;gap:8px">
+            <li>Lower electricity costs, with savings split by agreement</li>
+            <li>Zero capital, no maintenance, no operating risk</li>
+            <li>Backup power for critical loads where the design allows</li>
+            <li>A local engineer on call</li>
+          </ul>
+        </div>
+        <div style="flex:1 1 440px;min-width:0;background:#FFFFFF;border:1px solid #D5E0E3;border-radius:12px;padding:32px">
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:24px;margin:0">What we carry</h3>
+          <ul style="margin:18px 0 0;padding:0 0 0 22px;font-size:18px;line-height:1.65;color:#3F535C;display:flex;flex-direction:column;gap:8px">
+            <li>Equipment, installation, permits and utility connection</li>
+            <li>Performance risk on the savings</li>
+            <li>Insurance, monitoring and maintenance</li>
+            <li>End-of-life removal and regulatory tracking</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div id="how" style="background:#FFFFFF;border-top:1px solid #D5E0E3;border-bottom:1px solid #D5E0E3;padding:80px 0">
+    <div style="max-width:1240px;margin:0 auto;padding:0 24px">
+      <h2 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:clamp(28px,3.6vw,40px);margin:0;text-wrap:balance">From your data to savings in four steps</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:24px;margin-top:40px">
+        <div style="flex:1 1 250px;min-width:0;border-top:4px solid #047857;padding-top:20px">
+          <div style="font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:44px;color:#047857;line-height:1">1</div>
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:21px;margin:12px 0 0">Share your data</h3>
+          <p style="font-size:17px;line-height:1.6;color:#3F535C;margin:8px 0 0">Sign a data authorization. We pull 12 months of interval data and review your last 12 bills.</p>
+        </div>
+        <div style="flex:1 1 250px;min-width:0;border-top:4px solid #047857;padding-top:20px">
+          <div style="font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:44px;color:#047857;line-height:1">2</div>
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:21px;margin:12px 0 0">Free assessment</h3>
+          <p style="font-size:17px;line-height:1.6;color:#3F535C;margin:8px 0 0">Within two weeks you get your load profile, peak exposure, battery size and savings range, with every input shown.</p>
+        </div>
+        <div style="flex:1 1 250px;min-width:0;border-top:4px solid #047857;padding-top:20px">
+          <div style="font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:44px;color:#047857;line-height:1">3</div>
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:21px;margin:12px 0 0">Agreement</h3>
+          <p style="font-size:17px;line-height:1.6;color:#3F535C;margin:8px 0 0">A shared-savings agreement. We arrange financing, engineering, permits and the utility connection.</p>
+        </div>
+        <div style="flex:1 1 250px;min-width:0;border-top:4px solid #047857;padding-top:20px">
+          <div style="font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:44px;color:#047857;line-height:1">4</div>
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:21px;margin:12px 0 0">Build and operate</h3>
+          <p style="font-size:17px;line-height:1.6;color:#3F535C;margin:8px 0 0">A licensed electrical contractor installs the system. You receive monthly savings reports.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTORS -->
+  <div id="sectors" style="padding:80px 0 72px">
+    <div style="max-width:1240px;margin:0 auto;padding:0 24px">
+      <h2 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:clamp(28px,3.6vw,40px);margin:0;text-wrap:balance">Built for sites with large, peaky loads</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:30px">
+        <span style="background:#FFFFFF;border:1px solid #C9D5D8;border-radius:999px;padding:12px 22px;font-size:18px;font-weight:500">Cold storage</span>
+        <span style="background:#FFFFFF;border:1px solid #C9D5D8;border-radius:999px;padding:12px 22px;font-size:18px;font-weight:500">Food processing</span>
+        <span style="background:#FFFFFF;border:1px solid #C9D5D8;border-radius:999px;padding:12px 22px;font-size:18px;font-weight:500">Greenhouses</span>
+        <span style="background:#FFFFFF;border:1px solid #C9D5D8;border-radius:999px;padding:12px 22px;font-size:18px;font-weight:500">Manufacturing</span>
+        <span style="background:#FFFFFF;border:1px solid #C9D5D8;border-radius:999px;padding:12px 22px;font-size:18px;font-weight:500">Auto dealer groups</span>
+        <span style="background:#FFFFFF;border:1px solid #C9D5D8;border-radius:999px;padding:12px 22px;font-size:18px;font-weight:500">Hotels and arenas</span>
+        <span style="background:#FFFFFF;border:1px solid #C9D5D8;border-radius:999px;padding:12px 22px;font-size:18px;font-weight:500">Campuses and institutions</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAFETY AND TECHNOLOGY -->
+  <div id="safety" style="background:#0F2530;color:#FFFFFF;padding:80px 0">
+    <div style="max-width:1240px;margin:0 auto;padding:0 24px">
+      <h2 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:clamp(28px,3.6vw,40px);margin:0;text-wrap:balance">Industrial-grade, outdoors, away from your operations</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:24px;margin-top:40px">
+        <div style="flex:1 1 260px;min-width:0;border-top:2px solid #F2A93B;padding-top:18px">
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:20px;margin:0">Liquid-cooled LFP</h3>
+          <p style="font-size:17px;line-height:1.6;color:#C9D8DD;margin:8px 0 0">Lithium iron phosphate batteries in outdoor, liquid-cooled enclosures.</p>
+        </div>
+        <div style="flex:1 1 260px;min-width:0;border-top:2px solid #F2A93B;padding-top:18px">
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:20px;margin:0">NFPA 855 and ESA</h3>
+          <p style="font-size:17px;line-height:1.6;color:#C9D8DD;margin:8px 0 0">Designed to NFPA 855 and inspected by the Electrical Safety Authority.</p>
+        </div>
+        <div style="flex:1 1 260px;min-width:0;border-top:2px solid #F2A93B;padding-top:18px">
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:20px;margin:0">Nothing inside your building</h3>
+          <p style="font-size:17px;line-height:1.6;color:#C9D8DD;margin:8px 0 0">Ground-mounted, connected at your switchgear, with no interruption to operations.</p>
+        </div>
+        <div style="flex:1 1 260px;min-width:0;border-top:2px solid #F2A93B;padding-top:18px">
+          <h3 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:20px;margin:0">Solar when it helps</h3>
+          <p style="font-size:17px;line-height:1.6;color:#C9D8DD;margin:8px 0 0">We can add solar to the same connection if your site and economics support it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div id="faq" style="padding:80px 0">
+    <div style="max-width:880px;margin:0 auto;padding:0 24px">
+      <h2 style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:clamp(28px,3.6vw,40px);margin:0 0 28px;text-wrap:balance">Questions we hear first</h2>
+      <details>
+        <summary>Does the assessment cost anything?</summary>
+        <p>No. The assessment is free and carries no obligation. We ask only for your data authorization and a 30-minute meeting to review the results.</p>
+      </details>
+      <details>
+        <summary>What if Ontario changes the Class A rules?</summary>
+        <p>We track IESO and Ontario Energy Board changes. The agreement is written so that pricing is reset if the rules that drive the savings change.</p>
+      </details>
+      <details>
+        <summary>What happens if Power Solution stops operating?</summary>
+        <p>The system stays on your site, and the agreement gives you step-in rights so the battery keeps running.</p>
+      </details>
+      <details>
+        <summary>Do you need access to my roof or to interrupt production?</summary>
+        <p>No. The battery is ground-mounted outdoors and connects at your switchgear. Installation is planned around your operations.</p>
+      </details>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div id="contact" style="background:#047857;color:#FFFFFF;padding:80px 0">
+    <div style="max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+      <div style="flex:1 1 480px;min-width:0">
+        <h2 style="font-family:'Archivo',Arial,sans-serif;font-weight:800;font-size:clamp(30px,4vw,46px);margin:0;line-height:1.1;text-wrap:balance">Find out what a battery would save your site</h2>
+        <p style="font-size:19px;line-height:1.6;color:#D3E8EA;margin:18px 0 0;max-width:620px">Email your company name and facility address. We send you the data authorization form and deliver your free assessment within two weeks of receiving your data.</p>
+      </div>
+      <div style="flex:1 1 360px;min-width:0;background:#FFFFFF;color:#0F2530;border-radius:12px;padding:30px">
+        <div style="font-size:14px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#047857">Contact</div>
+        <a class="btn-primary" href="mailto:info@powersolution.ca" style="margin-top:16px">Email info@powersolution.ca</a>
+        <div style="font-size:15px;color:#3F535C;margin-top:14px;line-height:1.5">Please send your company name and facility address in the message.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="background:#0F2530;color:#9FB6BD;padding:36px 0">
+    <div style="max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 40px;font-size:14px;line-height:1.6">
+      <div style="flex:1 1 300px;min-width:0">
+        <div style="font-family:'Archivo',Arial,sans-serif;font-weight:700;font-size:17px;color:#FFFFFF">Power Solution</div>
+        <div style="margin-top:4px">www.powersolution.ca</div>
+      </div>
+      <div style="flex:2 1 460px;min-width:0">Savings ranges are indicative and are confirmed only from your metered data. All amounts are in Canadian dollars. Financing and equipment partners are being finalized for the first Niagara sites.</div>
+    </div>
+  </div>
+
+</div>
+
 </body>
 </html>
