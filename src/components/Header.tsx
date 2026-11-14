@@ -36,20 +36,6 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
           >
             Solar & BESS
           </button>
-          
-          <button 
-            onClick={() => setActiveTab('adu')}
-            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'adu' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-emerald-600'}`}
-          >
-            ADU Design
-          </button>
-          
-          <button 
-            onClick={() => setActiveTab('gallery')}
-            className={`px-4 md:px-6 py-2 rounded-xl font-bold text-sm transition-all ${activeTab === 'gallery' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-emerald-600'}`}
-          >
-            Gallery
-          </button>
         </nav>
       </div>
     </header>

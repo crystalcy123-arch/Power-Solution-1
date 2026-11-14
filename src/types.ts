@@ -5,17 +5,6 @@ export interface UserLocation {
   isDetected: boolean; // 补全此属性以修复 App.tsx 状态初始化报错
 }
 
-export interface ADUConfig {
-  size: 'studio' | '1-bedroom' | '2-bedroom';
-  intendedUse: 'rental' | 'family' | 'office' | 'guest-house';
-  addons: {
-    energyIndependence: boolean;
-    smartSecurity: boolean;
-    carbonNeutral: boolean;
-    zonalComfort: boolean;
-  };
-}
-
 export interface SolarNeeds {
   monthlyBill: number;
   roofType: string;
@@ -40,7 +29,7 @@ export interface AIResponse {
 }
 
 /**
- * 已更新：包含 'adu' 以支持导航切换并修复编译错误
+ * 已更新：移除 'adu' 与 'gallery'，仅保留 Home 与 Solar & BESS
  * 同时将 'solar' 更新为 'solar & BESS' 以匹配右上角标题更改需求
  */
-export type MainCategory = 'home' | 'solar & BESS' | 'adu' | 'gallery';
+export type MainCategory = 'home' | 'solar & BESS';

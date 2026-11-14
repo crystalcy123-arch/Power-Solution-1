@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import Header from './components/Header';
-import Hero from './components/Hero';
 import SolarSection from './components/SolarSection';
-import ADUSection from './components/ADUSection';
 import ProcessSection from './components/ProcessSection'; 
-import GallerySection from './components/GallerySection';
 import Footer from './components/Footer';
 import { MainCategory, UserLocation } from './types';
 
@@ -30,19 +27,6 @@ const App: React.FC = () => {
         {activeTab === 'solar & BESS' && (
           <div className="animate-in fade-in duration-500">
             <SolarSection location={location} />
-          </div>
-        )}
-
-        {activeTab === 'adu' && (
-          <div className="animate-in fade-in duration-500">
-            <Hero location={location} onHomeClick={() => {}} onSolarClick={() => {}} />
-            <ADUSection location={location} />
-          </div>
-        )}
-
-        {activeTab === 'gallery' && (
-          <div className="animate-in fade-in duration-500">
-            <GallerySection />
           </div>
         )}
       </main>
